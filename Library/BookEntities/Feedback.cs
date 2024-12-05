@@ -13,6 +13,7 @@ namespace Library.BookEntities
         public string? Comment { get; set; }
         public int Rating { get; set; }
         public DateTime Date { get; set; }
+        public bool IsPurchased { get; set; }
     }
 
 }
