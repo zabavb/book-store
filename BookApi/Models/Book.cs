@@ -1,6 +1,6 @@
 ﻿namespace BookApi.Models
 {
-    public class Book
+    internal class Book
     {
         public Guid Id { get; set; } 
         public string Title { get; set; } = null!;

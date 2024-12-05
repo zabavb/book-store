@@ -1,6 +1,6 @@
 ﻿namespace BookApi.Models
 {
-    public class Author
+    internal class Author
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

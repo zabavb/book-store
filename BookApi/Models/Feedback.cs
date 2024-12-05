@@ -1,6 +1,6 @@
 ﻿namespace BookApi.Models
 {
-    public class Feedback
+    internal class Feedback
     {
         public Guid Id { get; set; } 
         public Guid BookId { get; set; } 
