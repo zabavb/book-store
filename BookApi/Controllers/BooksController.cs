@@ -1,23 +1,35 @@
-﻿using BookApi.Data;
-using BookApi.Models;
+﻿using BookApi.Models;
 using BookApi.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace BookApi.Controllers
 {
+    /// <summary>
+    /// Manages book-related operations such as retrieving, creating, updating, and deleting books.
+    /// </summary>
+    /// <remarks>
+    /// This controller provides CRUD operations for managing books in the system.
+    /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
+
         public BooksController(IBookService bookService)
         {
             _bookService = bookService;
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of books.
+        /// </summary>
+        /// <param name="pageNumber">Page number (default: 1).</param>
+        /// <param name="pageSize">Number of books per page (default: 10).</param>
+        /// <returns>A paginated list of books.</returns>
+        /// <response code="200">Returns the list of books.</response>
+        /// <response code="400">Invalid pagination parameters.</response>
+        /// <response code="404">No books found.</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks(int pageNumber = 1, int pageSize = 10)
         {
@@ -34,13 +46,20 @@ namespace BookApi.Controllers
             }
 
             var paginatedBooks = books
-                .Skip((pageNumber - 1) * pageSize)  
-                .Take(pageSize) 
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
             return Ok(paginatedBooks);
         }
 
+        /// <summary>
+        /// Retrieves a book by its ID.
+        /// </summary>
+        /// <param name="id">Book ID.</param>
+        /// <returns>The requested book.</returns>
+        /// <response code="200">Returns the book.</response>
+        /// <response code="404">Book not found.</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<BookDto>> GetBookById(Guid id)
         {
@@ -54,6 +73,13 @@ namespace BookApi.Controllers
             return Ok(book);
         }
 
+        /// <summary>
+        /// Creates a new book.
+        /// </summary>
+        /// <param name="bookDto">Book data.</param>
+        /// <returns>The created book.</returns>
+        /// <response code="201">Book successfully created.</response>
+        /// <response code="400">Invalid input data.</response>
         [HttpPost]
         public async Task<ActionResult<BookDto>> CreateBook([FromBody] BookDto bookDto)
         {
@@ -66,6 +92,16 @@ namespace BookApi.Controllers
 
             return CreatedAtAction(nameof(GetBookById), new { id = createdBook.BookId }, createdBook);
         }
+
+        /// <summary>
+        /// Updates an existing book.
+        /// </summary>
+        /// <param name="id">Book ID.</param>
+        /// <param name="bookDto">Updated book data.</param>
+        /// <returns>The updated book.</returns>
+        /// <response code="200">Book successfully updated.</response>
+        /// <response code="400">Invalid input data.</response>
+        /// <response code="404">Book not found.</response>
         [HttpPut("{id}")]
         public async Task<ActionResult<BookDto>> UpdateBook(Guid id, [FromBody] BookDto bookDto)
         {
@@ -83,6 +119,14 @@ namespace BookApi.Controllers
 
             return Ok(updatedBook);
         }
+
+        /// <summary>
+        /// Deletes a book by its ID.
+        /// </summary>
+        /// <param name="id">Book ID.</param>
+        /// <returns>No content if successful.</returns>
+        /// <response code="204">Book successfully deleted.</response>
+        /// <response code="404">Book not found.</response>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBook(Guid id)
         {
@@ -93,9 +137,7 @@ namespace BookApi.Controllers
                 return NotFound("Book not found.");
             }
 
-            return NoContent(); 
+            return NoContent();
         }
-
-
     }
 }
