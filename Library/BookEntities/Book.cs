@@ -16,8 +16,9 @@ namespace Library.BookEntities
         public float Price { get; set; }
         public Language Language { get; set; } 
         public DateTime Year { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public CoverType Cover { get; set; }
+        public bool IsAvaliable {  get; set; }
         public List<Guid> FeedbackIds { get; set; } = new List<Guid>(); 
     }
 
