@@ -15,6 +15,9 @@ namespace BookApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
+        private const int DefaultPageNumber = 1;
+        private const int DefaultPageSize = 10;
+
 
         public BooksController(IBookService bookService)
         {
@@ -31,7 +34,7 @@ namespace BookApi.Controllers
         /// <response code="400">Invalid pagination parameters.</response>
         /// <response code="404">No books found.</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks(int pageNumber = DefaultPageNumber, int pageSize = DefaultPageSize)
         {
             if (pageNumber < 1 || pageSize < 1)
             {
