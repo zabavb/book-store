@@ -4,8 +4,8 @@ namespace Library.OrderEntities
 {
     public enum DeliveryType
     {
-        [Display(Name = "Yakaboo")]
-        YAKABOO,
+        [Display(Name = "Bookoria")]
+        BOOKORIA,
 
         [Display(Name = "Nova Post")]
         NOVA_POST,
