@@ -89,7 +89,7 @@ namespace OrderApi.Controllers
 
             var newOrder = await _orderService.CreateOrderAsync(orderDto);
 
-            return CreatedAtAction(nameof(GetOrderById), new {id = newOrder.OrderId}, newOrder)
+            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.OrderId }, newOrder);
         }
 
         /// <summary>
