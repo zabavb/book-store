@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Library.OrderEntities
+namespace OrderApi.Models
 {
     internal enum DeliveryType
     {

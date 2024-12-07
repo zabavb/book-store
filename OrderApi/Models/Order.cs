@@ -1,4 +1,4 @@
-﻿namespace Library.OrderEntities
+﻿namespace OrderApi.Models
 {
     internal class Order
     {
