@@ -21,7 +21,8 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1"
     });
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(xmlFile);
+    var xmlPath = Path.Combine($"{AppContext.BaseDirectory}", xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();
