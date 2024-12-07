@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
+using OrderApi.Models;
 
 namespace OrderApi.Services
 {
@@ -28,7 +29,8 @@ namespace OrderApi.Services
         }
         public async Task<OrderDto> GetOrderByIdAsync(Guid orderId)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
             {
@@ -40,17 +42,52 @@ namespace OrderApi.Services
 
         public async Task<OrderDto> CreateOrderAsync(OrderDto orderDto)
         {
-            throw new NotImplementedException();
+            var order = _mapper.Map<Order>(orderDto);
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<OrderDto>(order);
         }
 
         public async Task<bool> DeleteOrderAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if(order == null) { return false; }
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<OrderDto> UpdateOrderAsync(Guid id, OrderDto orderDto)
         {
-            throw new NotImplementedException();
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if(order == null) { return null; }
+
+
+            order.UserId = orderDto.UserId;
+            order.BookIds = orderDto.BookIds;
+
+            order.Price = orderDto.Price;
+            order.DeliveryPrice = orderDto.DeliveryPrice;
+
+            order.Address = orderDto.Address;
+            order.City = orderDto.City;
+            order.Region = orderDto.Region;
+
+            order.Delivery = (DeliveryType)orderDto.Delivery;
+            order.DeliveryDate = orderDto.DeliveryDate;
+            order.DeliveryTime = orderDto.DeliveryTime;
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<OrderDto>(order);
         }
     }
 }
