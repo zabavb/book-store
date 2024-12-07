@@ -2,7 +2,7 @@
 
 namespace Library.OrderEntities
 {
-    public enum DeliveryType
+    internal enum DeliveryType
     {
         [Display(Name = "Bookoria")]
         BOOKORIA,
