@@ -98,7 +98,7 @@ namespace OrderApi.Controllers
         /// <param name="id">Order id</param>
         /// <returns>NoContent on success</returns>
         /// <response code="204">Order deleted successfully</response>
-        /// <response code="404">Couldn not find the order</response>
+        /// <response code="404">Could not find the order</response>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(Guid id)
         {
