@@ -7,7 +7,7 @@ namespace OrderApi.Data
 {
     public class OrderDbContext : DbContext
     {
-        internal DbSet<Order> Orders = null!;
+        internal DbSet<Order> Orders { get; set; } = null!;
 
         public OrderDbContext(DbContextOptions<OrderDbContext> options) : base(options)
         {
@@ -20,6 +20,8 @@ namespace OrderApi.Data
                 entity.Property(b => b.Id)
                       .HasDefaultValueSql("NEWSEQUENTIALID()");
             });
+
+            DataSeeder.Seed(modelBuilder);
         }
     }
 }
