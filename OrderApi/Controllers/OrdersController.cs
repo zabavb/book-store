@@ -17,13 +17,26 @@ namespace OrderApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
         {
-            return null;
+            var orders = await _orderService.GetOrdersAsync();
+
+            if (orders == null || !orders.Any())
+            {
+                return NotFound("No orders found");
+            }
+
+            return Ok(orders);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
         {
-            return null;
+            var order = await _orderService.GetOrderByIdAsync(id);
+
+            if(order == null)
+            {
+                return NotFound($"Book with Id:{id} not found.");
+            }
+            return Ok(order);
         }
 
         [HttpPost]
@@ -35,13 +48,27 @@ namespace OrderApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<OrderDto>> UpdateOrder(Guid id, OrderDto orderDto)
         {
-            return null;
+            if(orderDto == null) 
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            var newOrder = await _orderService.CreateOrderAsync(orderDto);
+
+            return CreatedAtAction(nameof(GetOrderById), new {id = newOrder.OrderId}, newOrder)
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(Guid id)
         {
-            return null;
+            var isDeleted = await _orderService.DeleteOrderAsync(id);
+
+            if (!isDeleted)
+            {
+                return NotFound("Order not found.");
+            }
+
+            return NoContent();
         }
     }
 }
