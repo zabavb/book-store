@@ -61,7 +61,7 @@ namespace OrderApi.Controllers
         }
 
         /// <summary>
-        /// Created a new order
+        /// Creates a new order
         /// </summary>
         /// <param name="orderDto">Order data</param>
         /// <returns>Created order</returns>
