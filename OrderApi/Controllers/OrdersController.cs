@@ -27,6 +27,7 @@ namespace OrderApi.Controllers
         /// <response code="200">Retrieval successful, returns the list</response>
         /// <response code="404">Could not find the orders</response>
         [HttpGet]
+        [Route("GetOrders")]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
         {
             var orders = await _orderService.GetOrdersAsync();
@@ -47,6 +48,7 @@ namespace OrderApi.Controllers
         /// <response code="200">Retrieval successful, return the order</response>
         /// <response cose="404">Could not find the order</response>
         [HttpGet("{id}")]
+
         public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
@@ -66,9 +68,16 @@ namespace OrderApi.Controllers
         /// <response code="201">Order created successfully</response>
         /// <response code="400">Invalid input data</response>
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult<OrderDto>> CreateOrder([FromBody]OrderDto orderDto)
         {
-            return null;
+            if (orderDto == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            var newOrder = await _orderService.CreateOrderAsync(orderDto);
+
+            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.OrderId }, newOrder);
         }
 
         /// <summary>
@@ -80,16 +89,16 @@ namespace OrderApi.Controllers
         /// <response code="200">Order updated successfully</response>
         /// <response cose="400">Invalid input data</response>
         [HttpPut("{id}")]
-        public async Task<ActionResult<OrderDto>> UpdateOrder(Guid id, OrderDto orderDto)
+        public async Task<ActionResult<OrderDto>> UpdateOrder(Guid id, [FromBody]OrderDto orderDto)
         {
-            if(orderDto == null) 
+            if (orderDto == null)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest("InvalidData.");
             }
 
-            var newOrder = await _orderService.CreateOrderAsync(orderDto);
+            var updatedOrder = await _orderService.UpdateOrderAsync(id, orderDto);
 
-            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.OrderId }, newOrder);
+            return Ok(updatedOrder);
         }
 
         /// <summary>
