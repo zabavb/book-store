@@ -1,6 +1,9 @@
 ﻿using OrderApi.Models;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 760c94970cdc24eb9940e70da53b881b8876b67a
 
 namespace OrderApi.Data
 {
