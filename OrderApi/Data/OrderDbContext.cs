@@ -1,7 +1,6 @@
 ﻿using OrderApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace OrderApi.Data
 {
     public class OrderDbContext : DbContext
