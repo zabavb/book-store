@@ -81,7 +81,7 @@ namespace OrderApi.Services
             order.City = orderDto.City;
             order.Region = orderDto.Region;
 
-            order.Delivery = (DeliveryType)orderDto.Delivery;
+            order.Delivery = orderDto.Delivery;
             order.DeliveryDate = orderDto.DeliveryDate;
             order.DeliveryTime = orderDto.DeliveryTime;
 

@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OrderApi.Models;
+﻿using Library.OrderEntities;
+using Microsoft.EntityFrameworkCore;
+using Order = OrderApi.Models.Order;
 
 namespace OrderApi.Data
 {
