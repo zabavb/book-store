@@ -16,5 +16,6 @@
         public DateTime DeliveryDate { get; set; } = DateTime.Now;
         public DateTime DeliveryTime { get; set; }  // + 2 days, in case of Nova Post
 
+        public OrderStatus Status { get; set; } = OrderStatus.RECEIVED;
     }
 }
