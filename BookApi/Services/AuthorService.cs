@@ -18,7 +18,7 @@ namespace BookApi.Services
 
         }
 
-        public async Task<IEnumerable<AuthorDto>> GetAllAuthorsAsync()
+        public async Task<IEnumerable<AuthorDto>> GetAuthorsAsync()
         {
             var authors = await _context.Authors.ToListAsync();
 
