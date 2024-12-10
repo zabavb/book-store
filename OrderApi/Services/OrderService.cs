@@ -85,6 +85,8 @@ namespace OrderApi.Services
             order.DeliveryDate = orderDto.DeliveryDate;
             order.DeliveryTime = orderDto.DeliveryTime;
 
+            order.Status = orderDto.Status;
+
             await _context.SaveChangesAsync();
 
             return _mapper.Map<OrderDto>(order);
