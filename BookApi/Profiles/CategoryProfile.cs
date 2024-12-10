@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Library.BookEntities;
+using BookApi.Models;
 
 namespace BookApi.Profiles
 {
@@ -8,11 +8,11 @@ namespace BookApi.Profiles
         public CategoryProfile()
         {
             CreateMap<Category, CategoryDto>()
-                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
             CreateMap<CategoryDto, Category>()
-                .ForMember(dest => dest.CategoryId, opt => opt.Ignore());
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
 }
