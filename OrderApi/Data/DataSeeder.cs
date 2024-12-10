@@ -46,7 +46,7 @@ namespace OrderApi.Data
                 City = "Lviv",
                 Address = "Address3",
                 Price = (float)100.59,
-                Delivery = DeliveryType.BOOKORIA,
+                Delivery = DeliveryType.LIBRO,
                 DeliveryPrice = (float)120.59,
                 DeliveryDate = DateTime.Now,
                 DeliveryTime = DateTime.Now.AddDays(4),
