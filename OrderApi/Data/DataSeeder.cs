@@ -21,6 +21,7 @@ namespace OrderApi.Data
                 DeliveryPrice = (float)120.59,
                 DeliveryDate = DateTime.Now,
                 DeliveryTime = DateTime.Now.AddDays(2),
+                Status = OrderStatus.PROCESSING,
             };
             var order2 = new Order
             {
@@ -35,6 +36,7 @@ namespace OrderApi.Data
                 DeliveryPrice = (float)120.59,
                 DeliveryDate = DateTime.Now,
                 DeliveryTime = DateTime.Now.AddDays(7),
+                Status = OrderStatus.TRANSIT,
             };
 
             var order3 = new Order
@@ -50,6 +52,7 @@ namespace OrderApi.Data
                 DeliveryPrice = (float)120.59,
                 DeliveryDate = DateTime.Now,
                 DeliveryTime = DateTime.Now.AddDays(4),
+                Status = OrderStatus.DELIVERED,
             };
 
             modelBuilder.Entity<Order>().HasData(order1, order2, order3);
