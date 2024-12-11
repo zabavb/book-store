@@ -13,6 +13,8 @@ namespace Library.Validators
                 throw new ArgumentException("Type must be an enum");
             }
             _enumType = enumType;
+
+            ErrorMessage = $"The value is not a valid member of the {_enumType.Name} enum.";
         }
 
         public override bool IsValid(object? value)
