@@ -9,17 +9,44 @@ namespace Library.UserEntities
 {
     public class User
     {
-        public Guid UserId { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        public Guid? UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
-        public RoleType Role { get; set; } = RoleType.GUEST;
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public RoleType Role { get; set; }
         public Guid SubscriptionId { get; set; }
-        public DateTime SubscriptionEndDate { get; set; }
 
-        public List<Book> Basket { get; set; } = new();
-        public List<Guid> OrderIds { get; set; } = new();
+        public ICollection<Book> Basket { get; private set; }
+        public ICollection<Guid> OrderIds { get; private set; }
+
+        public User()
+        {
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            DateOfBirth = DateTime.Now;
+            Email = string.Empty;
+            PhoneNumber = string.Empty;
+            Role = RoleType.GUEST;
+            Basket = new HashSet<Book>();
+            OrderIds = new HashSet<Guid>();
+        }
+        public User(
+            Guid? userId, string firstName, string lastName, DateTime dateOfBirth, string email,
+            string phoneNumber, RoleType role, Guid subscriptionId,
+            ICollection<Book> basket, ICollection<Guid> orderIds
+        ) {
+            UserId = userId;
+            FirstName = firstName;
+            LastName = lastName;
+            DateOfBirth = dateOfBirth;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Role = role;
+            SubscriptionId = subscriptionId;
+            Basket = basket;
+            OrderIds = orderIds;
+        }
     }
 }
