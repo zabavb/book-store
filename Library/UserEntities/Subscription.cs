@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,13 @@ namespace Library.UserEntities
 {
     public class Subscription
     {
-        public Guid? SubscriptionId { get; set; }
+        [Key]
+        public Guid SubscriptionId { get; set; }
+        [Required, MaxLength(50), DataType(DataType.Text)]
         public string Title { get; set; }
-        public string Description { get; set; }
+        [MaxLength(1000), DataType(DataType.Text)]
+        public string? Description { get; set; }
+        [Required, MaxLength(50), DataType(DataType.DateTime)]
         public DateTime EndDate { get; set; }
 
         public Subscription()
@@ -19,7 +24,7 @@ namespace Library.UserEntities
             Description = string.Empty;
             EndDate = DateTime.Now.AddDays(1);
         }
-        public Subscription(Guid? subscriptionId, string title, string description, DateTime endDate)
+        public Subscription(Guid subscriptionId, string title, string? description, DateTime endDate)
         {
             SubscriptionId = subscriptionId;
             Title = title;

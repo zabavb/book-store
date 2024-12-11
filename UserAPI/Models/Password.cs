@@ -5,21 +5,23 @@ namespace UserAPI.Models
 {
     public class Password
     {
-        [Key]
-        public Guid Id { get; set; }
-        [Required, MaxLength(30), DataType(DataType.Text)]
+        public Guid? Id { get; set; }
         public string PasswordHash { get; set; }
-        [Required, MaxLength(4), DataType(DataType.Text)]
         public string PasswordSalt { get; set; }
-        [Required]
-        public Guid UserId { get; set; }
-        [NotMapped]
-        public UserDTO? User { get; set; } = new();
+        public UserDTO User { get; set; }
 
         public Password()
         {
             PasswordHash = string.Empty;
             PasswordSalt = string.Empty;
+            User = new();
+        }
+        public Password(Guid? id, string passwordHash, string passwordSalt, UserDTO user)
+        {
+            Id = id;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            User = user;
         }
     }
 }
