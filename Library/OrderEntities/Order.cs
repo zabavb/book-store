@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Library.Validators;
+using System.ComponentModel.DataAnnotations;
 
 namespace Library.OrderEntities
 {
@@ -24,6 +25,7 @@ namespace Library.OrderEntities
         [Required]
         public float Price { get; set; }
         [Required]
+        [EnumRange(typeof(DeliveryType))]
         public DeliveryType Delivery { get; set; }
         [Required]
         public float DeliveryPrice { get; set; }
@@ -32,6 +34,7 @@ namespace Library.OrderEntities
         [Required]
         public DateTime DeliveryTime { get; set; }  // + 2 days, in case of Nova Post
 
+        [EnumRange(typeof(OrderStatus))]
         public OrderStatus Status { get; set; } = OrderStatus.RECEIVED;
     }
 }
