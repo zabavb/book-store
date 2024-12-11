@@ -31,7 +31,7 @@ namespace Library.OrderEntities
         [Required]
         [Range(0, float.MaxValue)]
         public float DeliveryPrice { get; set; }
-        [Required]
+
         public DateTime DeliveryDate { get; set; } = DateTime.Now;
         [Required]
         public DateTime DeliveryTime { get; set; }  // + 2 days, in case of Nova Post
