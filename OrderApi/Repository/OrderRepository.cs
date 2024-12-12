@@ -2,7 +2,7 @@
 using OrderApi.Data;
 using OrderApi.Models;
 
-namespace Client.Repository
+namespace OrderApi.Repository
 {
     internal class OrderRepository : IOrderRepository
     {

@@ -3,7 +3,7 @@ using OrderApi.Data;
 using OrderApi.Services;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Client.Repository;
+using OrderApi.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
