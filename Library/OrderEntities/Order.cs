@@ -14,15 +14,12 @@ namespace Library.OrderEntities
 
         [Required]
         [StringLength(100, ErrorMessage = "Region must be less than 100 characters.")]
-        [RegularExpression("^[a-zA-Z\\s'-\\.]+$")]
         public string Region { get; set; } = string.Empty;
         [Required]
         [StringLength(100, ErrorMessage = "City must be less than 100 characters.")]
-        [RegularExpression("^[a-zA-Z\\s'-\\.]+$")]
         public string City { get; set; } = string.Empty;
         [Required]
         [StringLength(255,ErrorMessage = "Address must be less than 255 characters.")]
-        [RegularExpression("^[a-zA-Z0-9\\s,.-#]*$")]
         public string Address { get; set; } = string.Empty;
 
         [Required]
