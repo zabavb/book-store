@@ -10,7 +10,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookApi", "BookApi\BookApi.csproj", "{62B979E1-B71F-4712-813C-5B3A824D937A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderApi", "OrderApi\OrderApi.csproj", "{64289E2D-A6BD-4E60-9A02-B8729978266E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAPI", "UserAPI\UserAPI.csproj", "{77F81EA8-BC7F-4B38-A896-BBB406B61AB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderApi.Tests", "OrderApi.Tests\OrderApi.Tests.csproj", "{564E1B7A-EACD-445C-8C8D-EA851F8A36FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +41,10 @@ Global
 		{77F81EA8-BC7F-4B38-A896-BBB406B61AB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77F81EA8-BC7F-4B38-A896-BBB406B61AB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77F81EA8-BC7F-4B38-A896-BBB406B61AB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{564E1B7A-EACD-445C-8C8D-EA851F8A36FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{564E1B7A-EACD-445C-8C8D-EA851F8A36FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{564E1B7A-EACD-445C-8C8D-EA851F8A36FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{564E1B7A-EACD-445C-8C8D-EA851F8A36FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
