@@ -9,13 +9,9 @@ namespace Library.UserEntities
 {
     public class Subscription
     {
-        [Key]
         public Guid SubscriptionId { get; set; }
-        [Required, MaxLength(50), DataType(DataType.Text)]
         public string Title { get; set; }
-        [MaxLength(1000), DataType(DataType.Text)]
         public string? Description { get; set; }
-        [Required, MaxLength(50), DataType(DataType.DateTime)]
         public DateTime EndDate { get; set; }
 
         public Subscription()
