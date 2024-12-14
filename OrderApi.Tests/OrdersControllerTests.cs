@@ -27,10 +27,10 @@ namespace OrderApi.Tests
                     order1.Status == order2.Status);
         }
 
-        private async Task<OrderDbContext> GetInMemoryDbContext()
+        private async Task<OrderDbContext> GetInMemoryDbContext(string dbName = null)
         {
             var options = new DbContextOptionsBuilder<OrderDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
+                .UseInMemoryDatabase(databaseName: dbName ?? Guid.NewGuid().ToString())
                 .Options;
 
             var context = new OrderDbContext(options);
@@ -53,7 +53,7 @@ namespace OrderApi.Tests
         public async Task GetOrders_ReturnsAll()
         {
             // Arrange
-            var context = await GetInMemoryDbContext();
+            var context = await GetInMemoryDbContext("TestDb_GetOrders");
             var mapper = GetMapper();
             var orderService = new OrderService(context, mapper);
             var controller = new OrdersController(orderService);
@@ -73,7 +73,7 @@ namespace OrderApi.Tests
         public async Task GetOrdersById_ReturnsCorrect()
         {
             // Arrange
-            var context = await GetInMemoryDbContext();
+            var context = await GetInMemoryDbContext("TesbDb_GetOrderById");
             var mapper = GetMapper();
             var orderService = new OrderService(context, mapper);
             var controller = new OrdersController(orderService);
@@ -93,6 +93,158 @@ namespace OrderApi.Tests
             Assert.True(compareOrders(order,requestOrder));
         }
 
+        [Fact]
+        public async Task CreateOrder_Success()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_CreateOrder");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
 
+            var newOrder = new Order
+            {
+                OrderId = Guid.NewGuid(),
+                UserId = Guid.NewGuid(),
+                BookIds = { Guid.NewGuid() },
+                Region = "Lviv",
+                City = "Lviv",
+                Address = "Address10",
+                Price = (float)100.59,
+                Delivery = DeliveryType.NOVA_POST,
+                DeliveryPrice = (float)125.99,
+                DeliveryDate = DateTime.Now,
+                DeliveryTime = DateTime.Now.AddDays(2),
+                Status = OrderStatus.TRANSIT,
+            };
+
+            // Act
+            var result = await controller.CreateOrder(newOrder);
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<OrderDto>>(result);
+            var createdAtObjectResult = Assert.IsType<CreatedAtActionResult>(actionResult.Result);
+            var value = Assert.IsType<OrderDto>(createdAtObjectResult.Value);
+            var order = Assert.IsAssignableFrom<OrderDto>(value);
+            Assert.True(compareOrders(order, newOrder));
+        }
+
+        [Fact]
+        public async Task CreateOrder_TestForFalsePositives()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_CreateOrder_FalsePositives");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            var addedOrder = new Order
+            {
+                OrderId = Guid.NewGuid(),
+                UserId = Guid.NewGuid(),
+                BookIds = { Guid.NewGuid() },
+                Region = "Lviv",
+                City = "Lviv",
+                Address = "Address10",
+                Price = (float)100.59,
+                Delivery = DeliveryType.NOVA_POST,
+                DeliveryPrice = (float)125.99,
+                DeliveryDate = DateTime.Now,
+                DeliveryTime = DateTime.Now.AddDays(2),
+                Status = OrderStatus.TRANSIT,
+            };
+
+            var newOrder = new Order
+            {
+                OrderId = Guid.NewGuid(),
+                UserId = Guid.NewGuid(),
+                BookIds = { Guid.NewGuid() },
+                Region = "Kyiv",
+                City = "Kyiv",
+                Address = "Address12",
+                Price = (float)124.59,
+                Delivery = DeliveryType.UKR_POST,
+                DeliveryPrice = (float)125.99,
+                DeliveryDate = DateTime.Now.AddDays(-1),
+                DeliveryTime = DateTime.Now.AddDays(1),
+                Status = OrderStatus.PROCESSING,
+            };
+
+            // Act
+            var result = await controller.CreateOrder(addedOrder);
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<OrderDto>>(result);
+            var createdAtObjectResult = Assert.IsType<CreatedAtActionResult>(actionResult.Result);
+            var value = Assert.IsType<OrderDto>(createdAtObjectResult.Value);
+            var order = Assert.IsAssignableFrom<OrderDto>(value);
+            Assert.False(compareOrders(order, newOrder));
+        }
+
+        [Fact]
+        public async Task UpdateOrder_Success()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_UpdateOrder");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            var request = (await controller.GetOrders());
+            var ok = Assert.IsType<OkObjectResult>(request.Result);
+            var updatedOrderId = Assert.IsType<List<OrderDto>>(ok.Value)[0].OrderId;
+
+            var newOrder = new Order
+            {
+                OrderId = updatedOrderId,
+                UserId = Guid.NewGuid(),
+                BookIds = { Guid.NewGuid() },
+                Region = "Kyiv",
+                City = "Kyiv",
+                Address = "Address12",
+                Price = (float)124.59,
+                Delivery = DeliveryType.UKR_POST,
+                DeliveryPrice = (float)125.99,
+                DeliveryDate = DateTime.Now,
+                DeliveryTime = DateTime.Now.AddDays(2),
+                Status = OrderStatus.PROCESSING,
+            };
+
+            // Act
+            var result = await controller.UpdateOrder(updatedOrderId,newOrder);
+
+            // Assert
+            var updateResult = await controller.GetOrderById(updatedOrderId);
+            var actionResult = Assert.IsType<ActionResult<OrderDto>>(updateResult);
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var value = Assert.IsType<OrderDto>(okObjectResult.Value);
+            var order = Assert.IsAssignableFrom<OrderDto>(value);
+            Assert.True(compareOrders(order, newOrder));
+        }
+
+        [Fact]
+        public async Task DeleteOrder_Success()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_DeleteOrder");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            var request = (await controller.GetOrders());
+            var ok = Assert.IsType<OkObjectResult>(request.Result);
+            var deletedOrderId = Assert.IsType<List<OrderDto>>(ok.Value)[0].OrderId;
+
+
+
+            // Act
+            var result = await controller.DeleteOrder(deletedOrderId);
+            var fetchResult = await controller.GetOrderById(deletedOrderId);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<NotFoundObjectResult>(fetchResult.Result);
+
+        }
     }
 }
