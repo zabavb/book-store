@@ -13,18 +13,21 @@ namespace Library.UserEntities
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
         public Guid UserId { get; set; }
+        public User User { get; set; }
 
         public Password()
         {
             PasswordHash = string.Empty;
             PasswordSalt = string.Empty;
+            User = new();
         }
-        public Password(Guid passwordId, string passwordHash, string passwordSalt, Guid userId)
+        public Password(Guid passwordId, string passwordHash, string passwordSalt, Guid userId, User user)
         {
             PasswordId = passwordId;
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
             UserId = userId;
+            User = user;
         }
     }
 }

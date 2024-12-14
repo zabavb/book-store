@@ -24,6 +24,10 @@ namespace UserAPI.Data.Configurations
                 .IsRequired()
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("GETDATE() + 1");
+
+            builder.HasMany(s => s.Users)
+                .WithOne(u => u.Subscription)
+                .HasForeignKey(u => u.SubscriptionId);
         }
     }
 }

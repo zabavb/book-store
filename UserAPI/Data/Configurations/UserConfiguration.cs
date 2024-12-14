@@ -40,9 +40,18 @@ namespace UserAPI.Data.Configurations
             builder.Property(u => u.Role)
                 .IsRequired()
                 .HasConversion<string>();
-            
-            builder.HasIndex(u => u.Email)
-                .IsUnique();
+
+            builder.HasOne(u => u.Password)
+                .WithOne()
+                .HasForeignKey<User>(u => u.PasswordId)
+                .IsRequired();
+
+            builder.HasOne(u => u.Subscription)
+                .WithMany(s => s.Users)
+                .HasForeignKey(u => u.SubscriptionId)
+                .IsRequired(false);
+
+            builder.Ignore(u => u.Orders);
         }
     }
 }

@@ -23,6 +23,11 @@ namespace UserAPI.Data.Configurations
 
             builder.Property(p => p.UserId)
                 .IsRequired();
+
+            builder.HasOne(p => p.User)
+            .WithOne(u => u.Password)
+            .HasForeignKey<Password>(p => p.UserId)
+            .IsRequired();
         }
     }
 }
