@@ -1,12 +1,11 @@
 ﻿using Library.UserEntities;
 using Microsoft.EntityFrameworkCore;
-using UserAPI.Abstractions;
 using UserAPI.Data;
 using UserAPI.Models;
 
 namespace UserAPI.Repositories
 {
-    public class UserRepository : IManager<User>
+    public class UserRepository : IUserRepository
     {
         private readonly UserDbContext _context;
 
@@ -15,22 +14,26 @@ namespace UserAPI.Repositories
             _context = context;
         }
 
-        public async Task<PaginatedResult<User>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<User>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
         {
-            var totalUsers = await _context.Users.CountAsync();
+            IEnumerable<User> users;
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                users = await SearchEntitiesAsync(searchTerm);
+            else
+                users = _context.Users.AsNoTracking();
+            if (users.Any() && filter != null)
+                users = await FilterEntitiesAsync(users, filter);
 
-            var users = await _context.Users
-                .AsNoTracking()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            var totalUsers = await Task.FromResult(users.Count());
+
+            users = await Task.FromResult(users.Skip((pageNumber - 1) * pageSize).Take(pageSize));
 
             if (users == null)
                 throw new InvalidOperationException("Failed to fetch users.");
 
             return new PaginatedResult<User>
             {
-                Items = users,
+                Items = (ICollection<User>)users,
                 TotalCount = totalUsers,
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -47,7 +50,7 @@ namespace UserAPI.Repositories
             return user;
         }
 
-        public async Task<ICollection<User>> SearchEntitiesAsync(string searchTerm)
+        public async Task<IEnumerable<User>> SearchEntitiesAsync(string searchTerm)
         {
             var users = await _context.Users
                 .AsNoTracking()
@@ -62,6 +65,19 @@ namespace UserAPI.Repositories
             return users;
         }
 
+        public async Task<IEnumerable<User>> FilterEntitiesAsync(IEnumerable<User> users, UserFilter filter)
+        {
+            if (filter.Role.HasValue)
+                users = users.Where(u => u.Role.Equals(filter.Role));
+
+            if (filter.DateOfBirthStart.HasValue)
+                users = users.Where(u => u.DateOfBirth >= filter.DateOfBirthStart.Value);
+
+            if (filter.DateOfBirthEnd.HasValue)
+                users = users.Where(u => u.DateOfBirth <= filter.DateOfBirthEnd.Value);
+
+            return await Task.FromResult(users);
+        }
 
         public async Task AddEntityAsync(User entity)
         {

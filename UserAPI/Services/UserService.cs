@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Library.UserEntities;
-using UserAPI.Abstractions;
 using UserAPI.Models;
 using UserAPI.Models.DTOs;
 using UserAPI.Repositories;
 
 namespace UserAPI.Services
 {
-    public class UserService : IManager<UserDTO>
+    public class UserService : IUserService
     {
         private readonly UserRepository _repository;
         private readonly IMapper _mapper;
@@ -18,9 +17,9 @@ namespace UserAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResult<UserDTO>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<UserDTO>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
         {
-            var paginatedUsers = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize);
+            var paginatedUsers = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm, filter);
 
             if (paginatedUsers == null || paginatedUsers.Items == null)
                 throw new InvalidOperationException("Failed to fetch paginated users.");
@@ -42,15 +41,6 @@ namespace UserAPI.Services
                 throw new KeyNotFoundException($"User with ID {id} not found.");
 
             return user == null ? null : _mapper.Map<UserDTO>(user);
-        }
-
-        public async Task<ICollection<UserDTO>> SearchEntitiesAsync(string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-
-            var users = await _repository.SearchEntitiesAsync(searchTerm);
-            return _mapper.Map<ICollection<UserDTO>>(users);
         }
 
         public async Task AddEntityAsync(UserDTO entity)

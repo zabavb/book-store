@@ -1,12 +1,11 @@
 ﻿using Library.UserEntities;
 using Microsoft.EntityFrameworkCore;
-using UserAPI.Abstractions;
 using UserAPI.Data;
 using UserAPI.Models;
 
 namespace UserAPI.Repositories
 {
-    public class SubscriptionRepository : IManager<Subscription>
+    public class SubscriptionRepository : ISubscriptionRepository
     {
         private readonly UserDbContext _context;
 
@@ -15,22 +14,24 @@ namespace UserAPI.Repositories
             _context = context;
         }
 
-        public async Task<PaginatedResult<Subscription>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Subscription>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
         {
-            var totalSubscriptions = await _context.Subscriptions.CountAsync();
+            IEnumerable<Subscription> subscriptions;
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                subscriptions = await SearchEntitiesAsync(searchTerm);
+            else
+                subscriptions = _context.Subscriptions.AsNoTracking();
 
-            var subscriptions = await _context.Subscriptions
-                .AsNoTracking()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-            .ToListAsync();
+            var totalSubscriptions = await Task.FromResult(subscriptions.Count());
+
+            subscriptions = await Task.FromResult(subscriptions.Skip((pageNumber - 1) * pageSize).Take(pageSize));
 
             if (subscriptions == null)
                 throw new InvalidOperationException("Failed to fetch subscriptions.");
 
             return new PaginatedResult<Subscription>
             {
-                Items = subscriptions,
+                Items = (ICollection<Subscription>)subscriptions,
                 TotalCount = totalSubscriptions,
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -47,7 +48,7 @@ namespace UserAPI.Repositories
             return subscription;
         }
 
-        public async Task<ICollection<Subscription>> SearchEntitiesAsync(string searchTerm)
+        public async Task<IEnumerable<Subscription>> SearchEntitiesAsync(string searchTerm)
         {
             var subscriptions = await _context.Subscriptions
                 .AsNoTracking()

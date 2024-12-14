@@ -1,5 +1,4 @@
-﻿using UserAPI.Abstractions;
-using UserAPI.Models.DTOs;
+﻿using UserAPI.Models.DTOs;
 using UserAPI.Models;
 using UserAPI.Repositories;
 using AutoMapper;
@@ -7,7 +6,7 @@ using Library.UserEntities;
 
 namespace UserAPI.Services
 {
-    public class SubscriptionService : IManager<SubscriptionDTO>
+    public class SubscriptionService : ISubscriptionService
     {
         private readonly SubscriptionRepository _repository;
         private readonly IMapper _mapper;
@@ -18,9 +17,9 @@ namespace UserAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResult<SubscriptionDTO>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<SubscriptionDTO>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
         {
-            var paginatedSubscriptions = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize);
+            var paginatedSubscriptions = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm);
 
             if (paginatedSubscriptions == null || paginatedSubscriptions.Items == null)
                 throw new InvalidOperationException("Failed to fetch paginated subscriptions.");
@@ -42,15 +41,6 @@ namespace UserAPI.Services
                 throw new KeyNotFoundException($"Subscription with ID {id} not found.");
 
             return subscription == null ? null : _mapper.Map<SubscriptionDTO>(subscription);
-        }
-
-        public async Task<ICollection<SubscriptionDTO>> SearchEntitiesAsync(string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-
-            var subscriptions = await _repository.SearchEntitiesAsync(searchTerm);
-            return _mapper.Map<ICollection<SubscriptionDTO>>(subscriptions);
         }
 
         public async Task AddEntityAsync(SubscriptionDTO entity)
