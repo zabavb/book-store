@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Library.UserEntities;
 using UserAPI.Abstractions;
 using UserAPI.Models;
 using UserAPI.Models.DTOs;
