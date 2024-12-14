@@ -72,7 +72,7 @@ namespace OrderApi.Controllers
         {
             if (orderDto == null || !ModelState.IsValid)
             {
-                return BadRequest(ModelState); 
+                return BadRequest("InvalidData"); 
             }
 
             var newOrder = await _orderService.CreateOrderAsync(orderDto);
