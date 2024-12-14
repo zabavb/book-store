@@ -6,6 +6,7 @@ using OrderApi.Controllers;
 using OrderApi.Data;
 using OrderApi.Profiles;
 using OrderApi.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace OrderApi.Tests
 {
@@ -25,6 +26,34 @@ namespace OrderApi.Tests
                     order1.DeliveryTime == order2.DeliveryTime &&
                     order1.DeliveryDate == order2.DeliveryDate &&
                     order1.Status == order2.Status);
+        }
+
+        private void AddValidationErrorsFromDto<T>(ControllerBase controller, T dto)
+        {
+            var validationResults = new List<ValidationResult>();
+            var context = new ValidationContext(dto);
+
+            foreach (var property in typeof(T).GetProperties())
+            {
+                bool isValid = Validator.TryValidateProperty(
+                    property.GetValue(dto),
+                    new ValidationContext(dto) { MemberName = property.Name },
+                    validationResults
+                );
+
+                if (validationResults.Any())
+                {
+                    foreach (var validationResult in validationResults)
+                    {
+                        foreach (var memberName in validationResult.MemberNames)
+                        {
+                            controller.ModelState.AddModelError(memberName, validationResult.ErrorMessage);
+                        }
+                    }
+
+                    validationResults.Clear();
+                }
+            }
         }
 
         private async Task<OrderDbContext> GetInMemoryDbContext(string dbName = null)
@@ -182,6 +211,44 @@ namespace OrderApi.Tests
         }
 
         [Fact]
+        public async Task CreateOrder_PassedInvalidDataEmptyClass()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_CreateOrder_InvalidData");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            var newOrder = new Order();
+
+            //Adding validations
+            AddValidationErrorsFromDto(controller, newOrder);
+
+
+            // Act
+            var result = await controller.CreateOrder(newOrder);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task CreateOrder_PassedInvalidDataNull()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_CreateOrder_InvalidData");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            // Act
+            var result = await controller.CreateOrder(null);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
         public async Task UpdateOrder_Success()
         {
             // Arrange
@@ -223,6 +290,51 @@ namespace OrderApi.Tests
         }
 
         [Fact]
+        public async Task UpdateOrder_PassedInvalidDataEmptyClass()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_UpdateOrder_InvalidData");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            var request = (await controller.GetOrders());
+            var ok = Assert.IsType<OkObjectResult>(request.Result);
+            var updatedOrderId = Assert.IsType<List<OrderDto>>(ok.Value)[0].OrderId;
+
+            var newOrder = new Order();
+
+            //Adding validations
+            AddValidationErrorsFromDto(controller, newOrder);
+
+            // Act
+            var result = await controller.UpdateOrder(updatedOrderId,newOrder);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task UpdateOrder_PassedInvalidDataNull()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_UpdateOrder_InvalidData");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            var request = (await controller.GetOrders());
+            var ok = Assert.IsType<OkObjectResult>(request.Result);
+            var updatedOrderId = Assert.IsType<List<OrderDto>>(ok.Value)[0].OrderId;
+
+            // Act
+            var result = await controller.UpdateOrder(updatedOrderId, null);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
         public async Task DeleteOrder_Success()
         {
             // Arrange
@@ -245,6 +357,22 @@ namespace OrderApi.Tests
             Assert.IsType<NoContentResult>(result);
             Assert.IsType<NotFoundObjectResult>(fetchResult.Result);
 
+        }
+
+        [Fact]
+        public async Task DeleteOrder_NonExistingObjectId()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContext("TestDb_DeleteOrder");
+            var mapper = GetMapper();
+            var orderService = new OrderService(context, mapper);
+            var controller = new OrdersController(orderService);
+
+            // Act
+            var result = await controller.DeleteOrder(new Guid());
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
         }
     }
 }
