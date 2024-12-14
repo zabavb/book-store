@@ -76,6 +76,9 @@ namespace UserAPI.Repositories
             if (filter.DateOfBirthEnd.HasValue)
                 users = users.Where(u => u.DateOfBirth <= filter.DateOfBirthEnd.Value);
 
+            if (filter.HasSubscription)
+                users = users.Where(u => u.SubscriptionId.Equals(filter.HasSubscription));
+
             return await Task.FromResult(users);
         }
 
