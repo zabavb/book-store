@@ -1,24 +1,26 @@
 ﻿using Library.Validators;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace Library.OrderEntities
 {
     public class Order
     {
         [Required]
+        [Key]
         public Guid OrderId { get; set; }
         [Required]
         public Guid UserId { get; set; }
         [Required]  
         public List<Guid> BookIds { get; set; } = new List<Guid>();
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [StringLength(100, ErrorMessage = "Region must be less than 100 characters.")]
         public string Region { get; set; } = string.Empty;
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [StringLength(100, ErrorMessage = "City must be less than 100 characters.")]
         public string City { get; set; } = string.Empty;
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [StringLength(255,ErrorMessage = "Address must be less than 255 characters.")]
         public string Address { get; set; } = string.Empty;
 
