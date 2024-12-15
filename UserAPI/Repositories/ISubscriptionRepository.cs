@@ -1,5 +1,5 @@
-﻿using Library.UserEntities;
-using UserAPI.Models;
+﻿using UserAPI.Models;
+using UserAPI.Models.Extensions;
 
 namespace UserAPI.Repositories
 {
