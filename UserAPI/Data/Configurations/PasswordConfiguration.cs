@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Library.UserEntities;
+using UserAPI.Models;
 
 namespace UserAPI.Data.Configurations
 {
