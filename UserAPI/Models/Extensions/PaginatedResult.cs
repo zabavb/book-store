@@ -1,4 +1,4 @@
-﻿namespace UserAPI.Models
+﻿namespace UserAPI.Models.Extensions
 {
     public class PaginatedResult<T>
     {
