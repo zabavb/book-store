@@ -1,8 +1,7 @@
-﻿using UserAPI.Models.DTOs;
-using UserAPI.Models;
-using UserAPI.Repositories;
+﻿using UserAPI.Repositories;
 using AutoMapper;
-using Library.UserEntities;
+using UserAPI.Models.Extensions;
+using UserAPI.Models;
 
 namespace UserAPI.Services
 {
@@ -17,33 +16,33 @@ namespace UserAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResult<SubscriptionDTO>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
+        public async Task<PaginatedResult<SubscriptionDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
         {
             var paginatedSubscriptions = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm);
 
             if (paginatedSubscriptions == null || paginatedSubscriptions.Items == null)
                 throw new InvalidOperationException("Failed to fetch paginated subscriptions.");
 
-            return new PaginatedResult<SubscriptionDTO>
+            return new PaginatedResult<SubscriptionDto>
             {
-                Items = _mapper.Map<ICollection<SubscriptionDTO>>(paginatedSubscriptions.Items),
+                Items = _mapper.Map<ICollection<SubscriptionDto>>(paginatedSubscriptions.Items),
                 TotalCount = paginatedSubscriptions.TotalCount,
                 PageNumber = paginatedSubscriptions.PageNumber,
                 PageSize = paginatedSubscriptions.PageSize
             };
         }
 
-        public async Task<SubscriptionDTO?> GetEntityByIdAsync(Guid id)
+        public async Task<SubscriptionDto?> GetEntityByIdAsync(Guid id)
         {
             var subscription = await _repository.GetEntityByIdAsync(id);
 
             if (subscription == null)
                 throw new KeyNotFoundException($"Subscription with ID {id} not found.");
 
-            return subscription == null ? null : _mapper.Map<SubscriptionDTO>(subscription);
+            return subscription == null ? null : _mapper.Map<SubscriptionDto>(subscription);
         }
 
-        public async Task AddEntityAsync(SubscriptionDTO entity)
+        public async Task AddEntityAsync(SubscriptionDto entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("Subscription was not found.", nameof(entity));
@@ -59,7 +58,7 @@ namespace UserAPI.Services
             }
         }
 
-        public async Task UpdateEntityAsync(SubscriptionDTO entity)
+        public async Task UpdateEntityAsync(SubscriptionDto entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("Subscription was not found.", nameof(entity));

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Library.UserEntities;
 using UserAPI.Models;
-using UserAPI.Models.DTOs;
+using UserAPI.Models.Extensions;
 using UserAPI.Repositories;
 
 namespace UserAPI.Services
@@ -17,33 +16,33 @@ namespace UserAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResult<UserDTO>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
+        public async Task<PaginatedResult<UserDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
         {
             var paginatedUsers = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm, filter);
 
             if (paginatedUsers == null || paginatedUsers.Items == null)
                 throw new InvalidOperationException("Failed to fetch paginated users.");
 
-            return new PaginatedResult<UserDTO>
+            return new PaginatedResult<UserDto>
             {
-                Items = _mapper.Map<ICollection<UserDTO>>(paginatedUsers.Items),
+                Items = _mapper.Map<ICollection<UserDto>>(paginatedUsers.Items),
                 TotalCount = paginatedUsers.TotalCount,
                 PageNumber = paginatedUsers.PageNumber,
                 PageSize = paginatedUsers.PageSize
             };
         }
 
-        public async Task<UserDTO?> GetEntityByIdAsync(Guid id)
+        public async Task<UserDto?> GetEntityByIdAsync(Guid id)
         {
             var user = await _repository.GetEntityByIdAsync(id);
             
             if (user == null)
                 throw new KeyNotFoundException($"User with ID {id} not found.");
 
-            return user == null ? null : _mapper.Map<UserDTO>(user);
+            return user == null ? null : _mapper.Map<UserDto>(user);
         }
 
-        public async Task AddEntityAsync(UserDTO entity)
+        public async Task AddEntityAsync(UserDto entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("User was not found.", nameof(entity));
@@ -59,7 +58,7 @@ namespace UserAPI.Services
             }
         }
 
-        public async Task UpdateEntityAsync(UserDTO entity)
+        public async Task UpdateEntityAsync(UserDto entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("User was not found.", nameof(entity));
