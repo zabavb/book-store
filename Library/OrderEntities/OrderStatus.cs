@@ -5,10 +5,10 @@ namespace Library.OrderEntities
 {
     public enum OrderStatus
     {
-        RECEIVED,
+        PENDING,
         PROCESSING,
         PAYMENT,
         TRANSIT,
-        DELIVERED,
+        COMPLETED,
     }
 }
