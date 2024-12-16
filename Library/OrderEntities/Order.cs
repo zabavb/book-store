@@ -32,9 +32,9 @@ namespace Library.OrderEntities
         [Range(0, float.MaxValue)]
         public float DeliveryPrice { get; set; }
 
-        public DateTime DeliveryDate { get; set; } = DateTime.Now;
+        public DateTime OrderDate { get; set; } = DateTime.Now;
         [Required]
-        public DateTime DeliveryTime { get; set; }  // + 2 days, in case of Nova Post
+        public DateTime DeliveryDate { get; set; }  // + 2 days, in case of Nova Post
 
         [EnumRange(typeof(OrderStatus))]
         public OrderStatus Status { get; set; } = OrderStatus.RECEIVED;
