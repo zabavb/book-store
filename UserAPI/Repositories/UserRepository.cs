@@ -1,7 +1,7 @@
-﻿using Library.UserEntities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using UserAPI.Data;
 using UserAPI.Models;
+using UserAPI.Models.Extensions;
 
 namespace UserAPI.Repositories
 {

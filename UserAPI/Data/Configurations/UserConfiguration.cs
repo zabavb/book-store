@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Library.UserEntities;
+using UserAPI.Models;
 
 namespace UserAPI.Data.Configurations
 {
@@ -50,8 +50,6 @@ namespace UserAPI.Data.Configurations
                 .WithMany(s => s.Users)
                 .HasForeignKey(u => u.SubscriptionId)
                 .IsRequired(false);
-
-            builder.Ignore(u => u.Orders);
         }
     }
 }

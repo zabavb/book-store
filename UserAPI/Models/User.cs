@@ -1,23 +1,20 @@
-﻿using Library.BookEntities;
-using Library.OrderEntities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Library.UserEntities
+﻿namespace UserAPI.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public RoleType Role { get; set; }
+        public Guid PasswordId { get; set; }
+        public Password Password { get; set; }
+        public Guid? SubscriptionId { get; set; }
+        public Subscription? Subscription { get; set; }
+
+        //==== Basket ====
 
         public User()
         {
@@ -27,6 +24,8 @@ namespace Library.UserEntities
             Email = string.Empty;
             PhoneNumber = string.Empty;
             Role = RoleType.GUEST;
+            Password = new();
+            Subscription = new();
         }
     }
 }

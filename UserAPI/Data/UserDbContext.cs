@@ -1,6 +1,6 @@
-﻿using Library.UserEntities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using UserAPI.Data.Configurations;
+using UserAPI.Models;
 
 namespace UserAPI.Data
 {
