@@ -87,7 +87,7 @@ namespace OrderApi.Controllers
         /// <param name="orderDto">Updated order data</param>
         /// <returns>The updated order</returns>
         /// <response code="200">Order updated successfully</response>
-        /// <response cose="400">Invalid input data</response>
+        /// <response code="400">Invalid input data</response>
         [HttpPut("{id}")]
         public async Task<ActionResult<OrderDto>> UpdateOrder(Guid id, [FromBody]OrderDto orderDto)
         {
