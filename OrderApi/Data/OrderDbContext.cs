@@ -1,12 +1,13 @@
 ﻿using OrderApi.Models;
 using Microsoft.EntityFrameworkCore;
+using OrderApi.Data.Configurations;
 
 
 namespace OrderApi.Data
 {
     public class OrderDbContext : DbContext
     {
-        internal DbSet<Order> Orders { get; set; } = null!;
+        internal DbSet<Order> Orders { get; private set; } = null!;
 
         public OrderDbContext(DbContextOptions<OrderDbContext> options) : base(options)
         {
@@ -14,11 +15,7 @@ namespace OrderApi.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity.Property(b => b.OrderId)
-                      .HasDefaultValueSql("NEWSEQUENTIALID()");
-            });
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
 
             DataSeeder.Seed(modelBuilder);
         }
