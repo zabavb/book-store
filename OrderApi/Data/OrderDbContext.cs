@@ -16,7 +16,7 @@ namespace OrderApi.Data
         {
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.Property(b => b.Id)
+                entity.Property(b => b.OrderId)
                       .HasDefaultValueSql("NEWSEQUENTIALID()");
             });
 

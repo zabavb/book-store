@@ -10,7 +10,7 @@ namespace OrderApi.Data
         {
             var order1 = new Order
             {
-                Id = Guid.NewGuid(),
+                OrderId = Guid.NewGuid(),
                 UserId = Guid.NewGuid(),
                 BookIds = { Guid.NewGuid() },
                 Region = "Lviv",
@@ -25,7 +25,7 @@ namespace OrderApi.Data
             };
             var order2 = new Order
             {
-                Id = Guid.NewGuid(),
+                OrderId = Guid.NewGuid(),
                 UserId = Guid.NewGuid(),
                 BookIds = { Guid.NewGuid() },
                 Region = "Lviv",
@@ -41,7 +41,7 @@ namespace OrderApi.Data
 
             var order3 = new Order
             {
-                Id = Guid.NewGuid(),
+                OrderId = Guid.NewGuid(),
                 UserId = Guid.NewGuid(),
                 BookIds = { Guid.NewGuid() },
                 Region = "Lviv",
