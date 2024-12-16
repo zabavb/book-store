@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OrderApi.Models;
+using OrderApi.Models.Extensions;
 
 namespace OrderApi.Services
 {
@@ -14,16 +15,26 @@ namespace OrderApi.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<OrderDto>> GetOrdersAsync()
+        public async Task<PaginatedResult<Order>> GetOrdersAsync(int pageNumber, int pageSize)
         {
-            var orders = await _repository.GetAllAsync();
-
+            IEnumerable<Order> orders;
+            orders = await _repository.GetAllAsync();
             if (orders == null || !orders.Any())
             {
-                return new List<OrderDto>();
+                return new PaginatedResult<Order>();
             }
 
-            return _mapper.Map<List<OrderDto>>(orders);
+            var totalOrders = await Task.FromResult(orders.Count());
+
+            orders = await Task.FromResult(orders.Skip((pageNumber - 1) * pageSize).Take(pageSize));
+
+            return new PaginatedResult<Order>
+            {
+                Items = (ICollection<Order>)orders,
+                TotalCount = totalOrders,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            }
         }
 
         public async Task<OrderDto?> GetOrderByIdAsync(Guid orderId)
@@ -78,8 +89,8 @@ namespace OrderApi.Services
             order.City = orderDto.City;
             order.Region = orderDto.Region;
             order.Delivery = orderDto.Delivery;
+            order.OrderDate = orderDto.OrderDate;
             order.DeliveryDate = orderDto.DeliveryDate;
-            order.DeliveryTime = orderDto.DeliveryTime;
             order.Status = orderDto.Status;
 
             await _repository.UpdateAsync(order);
