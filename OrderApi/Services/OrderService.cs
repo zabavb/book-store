@@ -34,7 +34,7 @@ namespace OrderApi.Services
                 TotalCount = totalOrders,
                 PageNumber = pageNumber,
                 PageSize = pageSize
-            }
+            };
         }
 
         public async Task<OrderDto?> GetOrderByIdAsync(Guid orderId)
