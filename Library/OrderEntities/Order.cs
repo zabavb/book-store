@@ -10,17 +10,17 @@ namespace Library.OrderEntities
         [Required]
         public Guid UserId { get; set; }
         [Required]  
-        public List<Guid> BookIds { get; set; } = new List<Guid>();
+        public List<Guid> BookIds { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "Region must be less than 100 characters.")]
-        public string Region { get; set; } = string.Empty;
+        public string Region { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "City must be less than 100 characters.")]
-        public string City { get; set; } = string.Empty;
+        public string City { get; set; }
         [Required]
         [StringLength(255,ErrorMessage = "Address must be less than 255 characters.")]
-        public string Address { get; set; } = string.Empty;
+        public string Address { get; set; }
 
         [Required]
         [Range(0, float.MaxValue)]
@@ -32,11 +32,21 @@ namespace Library.OrderEntities
         [Range(0, float.MaxValue)]
         public float DeliveryPrice { get; set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime OrderDate { get; set; }
         [Required]
-        public DateTime DeliveryDate { get; set; }  // + 2 days, in case of Nova Post
+        public DateTime DeliveryDate { get; set; }
 
         [EnumRange(typeof(OrderStatus))]
-        public OrderStatus Status { get; set; } = OrderStatus.RECEIVED;
+        public OrderStatus Status { get; set; }
+
+        public Order()
+        {
+            BookIds = new List<Guid>();
+            Region = string.Empty;
+            City = string.Empty;
+            Address = string.Empty;
+            OrderDate = DateTime.Now;
+            Status = OrderStatus.RECEIVED;
+        }
     }
 }
