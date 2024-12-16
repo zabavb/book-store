@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text;
 using UserAPI.Data;
 using UserAPI.Models;
 using UserAPI.Models.Extensions;
@@ -8,10 +9,14 @@ namespace UserAPI.Repositories
     public class SubscriptionRepository : ISubscriptionRepository
     {
         private readonly UserDbContext _context;
+        private readonly ILogger<ISubscriptionRepository> _logger;
+        private string _message;
 
-        public SubscriptionRepository(UserDbContext context)
+        public SubscriptionRepository(UserDbContext context, ILogger<ISubscriptionRepository> logger, string message)
         {
             _context = context;
+            _logger = logger;
+            _message = message;
         }
 
         public async Task<PaginatedResult<Subscription>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
@@ -27,7 +32,13 @@ namespace UserAPI.Repositories
             subscriptions = await Task.FromResult(subscriptions.Skip((pageNumber - 1) * pageSize).Take(pageSize));
 
             if (subscriptions == null)
-                throw new InvalidOperationException("Failed to fetch subscriptions.");
+            {
+                _message = "Failed to fetch subscriptions.";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message);
+            }
+            else
+                _logger.LogInformation("Subscriptions successfully fetched.");
 
             return new PaginatedResult<Subscription>
             {
@@ -43,7 +54,13 @@ namespace UserAPI.Repositories
             var subscription = await _context.Subscriptions.AsNoTracking().FirstOrDefaultAsync(s => s.SubscriptionId == id);
 
             if (subscription == null)
-                throw new KeyNotFoundException($"Subscription with ID {id} not found.");
+            {
+                _message = $"Subscription with ID [{id}] not found.";
+                _logger.LogError(_message);
+                throw new KeyNotFoundException(_message);
+            }
+            else
+                _logger.LogInformation($"Found subscription with ID [{subscription.SubscriptionId}].");
 
             return subscription;
         }
@@ -56,7 +73,13 @@ namespace UserAPI.Repositories
                 .ToListAsync();
 
             if (subscriptions == null)
-                throw new InvalidOperationException("Failed to search subscriptions.");
+            {
+                _message = "Failed to search subscriptions.";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message);
+            }
+            else
+                _logger.LogInformation("Successfully searched subscriptions.");
 
             return subscriptions;
         }
@@ -64,33 +87,51 @@ namespace UserAPI.Repositories
         public async Task AddEntityAsync(Subscription entity)
         {
             if (entity == null)
-                throw new ArgumentNullException("Subscription was not found.", nameof(entity));
+            {
+                _message = "Subscription not provided for creation.";
+                _logger.LogError(_message);
+                throw new ArgumentNullException(_message, nameof(entity));
+            }
 
             try
             {
                 await _context.Subscriptions.AddAsync(entity);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation($"Subscription [{entity}] successfully created.");
             }
             catch (ArgumentNullException ex)
             {
-                throw new ArgumentException("Subscription entity cannot be null.", ex);
+                _message = "Subscription cannot be null.";
+                _logger.LogError(_message);
+                throw new ArgumentException(_message, ex);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Error occurred while adding the subscription to the database.", ex);
+                _message = "Error occurred while adding the subscription to the database.";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message, ex);
             }
         }
 
         public async Task UpdateEntityAsync(Subscription entity)
         {
             if (entity == null)
-                throw new ArgumentNullException("Subscription was not found.", nameof(entity));
+            {
+                _message = "Subscription was not provided for update.";
+                _logger.LogError(_message);
+                throw new ArgumentNullException(_message, nameof(entity));
+            }
 
             if (!await _context.Subscriptions.AnyAsync(s => s.SubscriptionId == entity.SubscriptionId))
-                throw new InvalidOperationException($"Subscription with ID {entity.SubscriptionId} does not exist.");
+            {
+                _message = $"Subscription with ID {entity.SubscriptionId} does not exist.";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message);
+            }
 
             _context.Subscriptions.Update(entity);
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"Subscription successsfully upated to [{entity}].");
         }
 
         public async Task DeleteEntityAsync(Guid id)
@@ -98,10 +139,15 @@ namespace UserAPI.Repositories
             var subscription = await _context.Subscriptions.FindAsync(id);
 
             if (subscription == null)
-                throw new KeyNotFoundException($"User with ID {id} not found for deletion.");
+            {
+                _message = $"Subscription with ID {id} not found for deletion.";
+                _logger.LogError(_message);
+                throw new KeyNotFoundException(_message);
+            }
 
             _context.Subscriptions.Remove(subscription);
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"Subscription with ID [{subscription.SubscriptionId}] successfully deleted.");
         }
     }
 }

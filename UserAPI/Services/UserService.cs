@@ -9,11 +9,15 @@ namespace UserAPI.Services
     {
         private readonly UserRepository _repository;
         private readonly IMapper _mapper;
+        private readonly ILogger<IUserService> _logger;
+        private string _message;
 
-        public UserService(UserRepository repository, IMapper mapper)
+        public UserService(UserRepository repository, IMapper mapper, ILogger<IUserService> logger, string message)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = logger;
+            _message = message;
         }
 
         public async Task<PaginatedResult<UserDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
@@ -21,7 +25,13 @@ namespace UserAPI.Services
             var paginatedUsers = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm, filter);
 
             if (paginatedUsers == null || paginatedUsers.Items == null)
-                throw new InvalidOperationException("Failed to fetch paginated users.");
+            {
+                _message = "Failed to fetch paginated users.";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message);
+            }
+
+            _logger.LogInformation("Users successfully fetched.");
 
             return new PaginatedResult<UserDto>
             {
@@ -37,44 +47,65 @@ namespace UserAPI.Services
             var user = await _repository.GetEntityByIdAsync(id);
             
             if (user == null)
-                throw new KeyNotFoundException($"User with ID {id} not found.");
+            {
+                _message = $"User with ID [{id}] not found.";
+                _logger.LogError(_message);
+                throw new KeyNotFoundException(_message);
+            }
 
+            _logger.LogInformation($"User with ID [{id}] successfully fetched.");
             return user == null ? null : _mapper.Map<UserDto>(user);
         }
 
         public async Task AddEntityAsync(UserDto entity)
         {
             if (entity == null)
-                throw new ArgumentNullException("User was not found.", nameof(entity));
+            {
+                _message = "User was not provided.";
+                _logger.LogError(_message);
+                throw new ArgumentNullException(_message, nameof(entity));
+            }
 
             var user = _mapper.Map<User>(entity);
             try
             {
                 await _repository.AddEntityAsync(user);
+                _logger.LogInformation("User successfully created.");
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Error occurred while adding the user.", ex);
+                _message = "Error occurred while adding the user.";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message, ex);
             }
         }
 
         public async Task UpdateEntityAsync(UserDto entity)
         {
             if (entity == null)
-                throw new ArgumentNullException("User was not found.", nameof(entity));
+            {
+                _message = "User was not provided for update.";
+                _logger.LogError(_message);
+                throw new ArgumentNullException(_message, nameof(entity));
+            }
 
             var user = _mapper.Map<User>(entity);
             try
             {
                 await _repository.UpdateEntityAsync(user);
+                _logger.LogInformation($"User with ID [{entity.Id}] successfully updated.");
             }
             catch (InvalidOperationException)
             {
-                throw new KeyNotFoundException($"User with ID {entity.Id} not found for update.");
+                _message = $"User with ID {entity.Id} not found for update.";
+                _logger.LogError(_message);
+                throw new KeyNotFoundException(_message);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Error occurred while updating the user.", ex);
+                _message = $"Error occurred while updating the user with id[{entity.Id}].";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message, ex);
             }
         }
 
@@ -83,14 +114,19 @@ namespace UserAPI.Services
             try
             {
                 await _repository.DeleteEntityAsync(id);
+                _logger.LogError($"User with ID [{id}] successfully deleted."); 
             }
             catch (InvalidOperationException)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found for deletion.");
+                _message = $"User with ID [{id}] not found for deletion.";
+                _logger.LogError(_message);
+                throw new KeyNotFoundException(_message);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Error occurred while deleting the user.", ex);
+                _message = $"Error occurred while deleting the user with ID [{id}].";
+                _logger.LogError(_message);
+                throw new InvalidOperationException(_message, ex);
             }
         }
     }
