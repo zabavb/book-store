@@ -15,7 +15,7 @@ namespace OrderApi.Controllers
     {
         private readonly IOrderService _orderService;
 
-        public OrdersController(IOrderService orderService)
+        internal OrdersController(IOrderService orderService)
         {
             _orderService = orderService;
         }
@@ -46,7 +46,7 @@ namespace OrderApi.Controllers
         /// <param name="id">Order id</param>
         /// <returns>Order which id matches with given one</returns>
         /// <response code="200">Retrieval successful, return the order</response>
-        /// <response cose="404">Could not find the order</response>
+        /// <response code="404">Could not find the order</response>
         [HttpGet("{id}")]
 
         public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
@@ -77,7 +77,7 @@ namespace OrderApi.Controllers
 
             var newOrder = await _orderService.CreateOrderAsync(orderDto);
 
-            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.OrderId }, newOrder);
+            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.Id }, newOrder);
         }
 
         /// <summary>
