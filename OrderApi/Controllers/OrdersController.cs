@@ -70,7 +70,7 @@ namespace OrderApi.Controllers
         [HttpPost]
         public async Task<ActionResult<OrderDto>> CreateOrder([FromBody]OrderDto orderDto)
         {
-            if (orderDto == null)
+            if (orderDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Invalid data.");
             }
@@ -91,7 +91,7 @@ namespace OrderApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<OrderDto>> UpdateOrder(Guid id, [FromBody]OrderDto orderDto)
         {
-            if (orderDto == null)
+            if (orderDto == null || !ModelState.IsValid)
             {
                 return BadRequest("InvalidData.");
             }
