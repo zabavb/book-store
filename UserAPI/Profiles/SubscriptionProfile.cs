@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Library.UserEntities;
 using UserAPI.Models.DTOs;
 
 namespace UserAPI.Profiles
