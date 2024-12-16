@@ -1,11 +1,13 @@
-﻿namespace OrderApi.Services
+﻿using OrderApi.Models;
+
+namespace OrderApi.Services
 {
-    public interface IOrderService
+    internal interface IOrderService
     {
         Task<IEnumerable<OrderDto>> GetOrdersAsync();
         Task<OrderDto> GetOrderByIdAsync(Guid orderId);
-        Task<OrderDto> CreateOrderAsync(OrderDto orderDto);
-        Task<OrderDto> UpdateOrderAsync(Guid id, OrderDto orderDto);
+        Task<OrderDto> CreateOrderAsync(Order orderDto);
+        Task<OrderDto> UpdateOrderAsync(Guid id, Order orderDto);
         Task<bool> DeleteOrderAsync(Guid id);
     }
 }
