@@ -19,8 +19,8 @@ namespace OrderApi.Data
                 Price = (float)100.59,
                 Delivery = DeliveryType.NOVA_POST,
                 DeliveryPrice = (float)120.59,
-                DeliveryDate = DateTime.Now,
-                DeliveryTime = DateTime.Now.AddDays(2),
+                OrderDate = DateTime.Now,
+                DeliveryDate = DateTime.Now.AddDays(2),
                 Status = OrderStatus.PROCESSING,
             };
             var order2 = new Order
@@ -34,8 +34,8 @@ namespace OrderApi.Data
                 Price = (float)100.59,
                 Delivery = DeliveryType.UKR_POST,
                 DeliveryPrice = (float)120.59,
-                DeliveryDate = DateTime.Now,
-                DeliveryTime = DateTime.Now.AddDays(7),
+                OrderDate = DateTime.Now,
+                DeliveryDate = DateTime.Now.AddDays(7),
                 Status = OrderStatus.TRANSIT,
             };
 
@@ -50,9 +50,9 @@ namespace OrderApi.Data
                 Price = (float)100.59,
                 Delivery = DeliveryType.LIBRO,
                 DeliveryPrice = (float)120.59,
-                DeliveryDate = DateTime.Now,
-                DeliveryTime = DateTime.Now.AddDays(4),
-                Status = OrderStatus.DELIVERED,
+                OrderDate = DateTime.Now,
+                DeliveryDate = DateTime.Now.AddDays(4),
+                Status = OrderStatus.COMPLETED,
             };
 
             modelBuilder.Entity<Order>().HasData(order1, order2, order3);
