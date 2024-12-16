@@ -15,8 +15,8 @@ namespace OrderApi.Models
         public float Price { get; set; }
         public DeliveryType Delivery { get; set; }
         public float DeliveryPrice { get; set; }
-        public DateTime DeliveryDate { get; set; } = DateTime.Now;
-        public DateTime DeliveryTime { get; set; }  // + 2 days, in case of Nova Post
+        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime DeliveryDate { get; set; }  // + 2 days, in case of Nova Post
 
         public OrderStatus Status { get; set; } = OrderStatus.RECEIVED;
     }
