@@ -1,4 +1,3 @@
-﻿global using UserDTO = Library.UserEntities.User;
-global using SubscriptionDTO = Library.UserEntities.Subscription;
-global using BookDTO = Library.BookEntities.Book;
-global using OrderDTO = Library.OrderEntities.Order;
+﻿global using UserDto = Library.UserEntities.User;
+global using PasswordDto = Library.UserEntities.Password;
+global using SubscriptionDto = Library.UserEntities.Subscription;
