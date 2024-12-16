@@ -1,36 +1,34 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using OrderApi.Data;
 using OrderApi.Models;
 
 namespace OrderApi.Services
 {
-    public class OrderService : IOrderService
+    internal class OrderService : IOrderService
     {
-        private readonly OrderDbContext _context;
+        private readonly IOrderRepository _repository;
         private readonly IMapper _mapper;
 
-        public OrderService(OrderDbContext context, IMapper mapper)
+        public OrderService(IOrderRepository repository, IMapper mapper)
         {
-            _context = context;
+            _repository = repository;
             _mapper = mapper;
         }
 
         public async Task<IEnumerable<OrderDto>> GetOrdersAsync()
         {
-            var orders = await _context.Orders.ToListAsync();
+            var orders = await _repository.GetAllAsync();
 
-            if (orders == null || orders.Count == 0)
+            if (orders == null || !orders.Any())
             {
-                return [];
+                return new List<OrderDto>();
             }
 
             return _mapper.Map<List<OrderDto>>(orders);
         }
-        public async Task<OrderDto> GetOrderByIdAsync(Guid orderId)
+
+        public async Task<OrderDto?> GetOrderByIdAsync(Guid orderId)
         {
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = await _repository.GetByIdAsync(orderId);
 
             if (order == null)
             {
@@ -44,50 +42,47 @@ namespace OrderApi.Services
         {
             var order = _mapper.Map<Order>(orderDto);
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(order);
 
             return _mapper.Map<OrderDto>(order);
         }
 
         public async Task<bool> DeleteOrderAsync(Guid id)
         {
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(o => o.Id == id);
+            var order = await _repository.GetByIdAsync(id);
 
-            if(order == null) { return false; }
+            if (order == null)
+            {
+                return false;
+            }
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
+            await _repository.DeleteAsync(order);
             return true;
         }
 
-        public async Task<OrderDto> UpdateOrderAsync(Guid id, OrderDto orderDto)
+        public async Task<OrderDto?> UpdateOrderAsync(Guid id, OrderDto orderDto)
         {
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(o => o.Id == id);
+            var order = await _repository.GetByIdAsync(id);
 
-            if(order == null) { return null; }
+            if (order == null)
+            {
+                return null;
+            }
 
-
+            // Map the changes to the existing order
             order.UserId = orderDto.UserId;
             order.BookIds = orderDto.BookIds;
-
             order.Price = orderDto.Price;
             order.DeliveryPrice = orderDto.DeliveryPrice;
-
             order.Address = orderDto.Address;
             order.City = orderDto.City;
             order.Region = orderDto.Region;
-
             order.Delivery = orderDto.Delivery;
             order.DeliveryDate = orderDto.DeliveryDate;
             order.DeliveryTime = orderDto.DeliveryTime;
-
             order.Status = orderDto.Status;
 
-            await _context.SaveChangesAsync();
+            await _repository.UpdateAsync(order);
 
             return _mapper.Map<OrderDto>(order);
         }
