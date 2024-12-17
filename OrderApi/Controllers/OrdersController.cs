@@ -67,6 +67,7 @@ namespace OrderApi.Controllers
         /// <returns>Created order</returns>
         /// <response code="201">Order created successfully</response>
         /// <response code="400">Invalid input data</response>
+        /// <response code="500">Object with the given Id already exists</response>
         [HttpPost]
         public async Task<ActionResult<OrderDto>> CreateOrder([FromBody]OrderDto orderDto)
         {
