@@ -5,16 +5,16 @@ using OrderApi.Services;
 
 namespace OrderApi.Repository
 {
-    internal class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly OrderDbContext _context;
         private readonly ILogger<IOrderRepository> _logger;
         private string _message;
-        public OrderRepository(OrderDbContext context, ILogger<IOrderRepository> logger, string message)
+        public OrderRepository(OrderDbContext context, ILogger<IOrderRepository> logger)
         {
             _context = context;
             _logger = logger;
-            _message = message;
+            _message = string.Empty;
         }
 
         public async Task<IEnumerable<Order>> GetAllAsync()

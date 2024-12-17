@@ -3,7 +3,7 @@ using OrderApi.Models.Extensions;
 
 namespace OrderApi.Services
 {
-    internal interface IOrderService
+    public interface IOrderService
     {
         Task<PaginatedResult<Order>> GetOrdersAsync(int pageNumber, int pageSize);
         Task<OrderDto> GetOrderByIdAsync(Guid orderId);

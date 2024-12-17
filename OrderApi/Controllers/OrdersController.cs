@@ -15,7 +15,7 @@ namespace OrderApi.Controllers
     {
         private readonly IOrderService _orderService;
 
-        internal OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService)
         {
             _orderService = orderService;
         }

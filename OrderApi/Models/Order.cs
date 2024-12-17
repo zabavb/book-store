@@ -2,7 +2,7 @@
 
 namespace OrderApi.Models
 {
-    internal class Order
+    public class Order
     {
         public Guid OrderId { get; set; }
         public Guid UserId { get; set; }
