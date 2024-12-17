@@ -1,19 +1,40 @@
 {
   "Routes": [
-    //=============== Client ===============
+    //======================================= Client =======================================
 
+    //======================================= BookAPI =======================================
 
+    //======================================= UserAPI =======================================
+    //======================= User entity =======================
+    {
+      "DownstreamPathTemplate": "/api/users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7007
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/users",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/users/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7007
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/users/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+    }
+    //======================= Password entity =======================
 
-    //=============== BookAPI ===============
+    //======================= Subscription entity =======================
 
-
-
-    //=============== UserAPI ===============
-
-    
-
-    //=============== OrderAPI ===============
-
+    //======================================= OrderAPI =======================================
 
   ]
 }
