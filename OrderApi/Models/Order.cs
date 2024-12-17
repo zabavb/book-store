@@ -27,7 +27,7 @@ namespace OrderApi.Models
             City = string.Empty;
             Address = string.Empty;
             OrderDate = DateTime.Now;
-            Status = OrderStatus.RECEIVED;
+            Status = OrderStatus.PENDING;
         }
     }
 }
