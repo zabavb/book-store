@@ -4,7 +4,7 @@ using OrderApi.Models.Extensions;
 
 namespace OrderApi.Services
 {
-    public class OrderService : IOrderService
+    internal class OrderService : IOrderService
     {
         private readonly IOrderRepository _repository;
         private readonly IMapper _mapper;

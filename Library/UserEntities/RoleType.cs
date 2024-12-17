@@ -9,13 +9,9 @@ namespace Library.UserEntities
 {
     public enum RoleType
     {
-        [Display(Name = "admin")]
         ADMIN,
-        [Display(Name = "moderator")]
         MODERATOR,
-        [Display(Name = "user")]
         USER,
-        [Display(Name = "guest")]
         GUEST
     }
 }
