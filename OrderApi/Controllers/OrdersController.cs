@@ -83,7 +83,6 @@ namespace OrderApi.Controllers
         /// <summary>
         /// Updates existing order
         /// </summary>
-        /// <param name="id">Order id</param>
         /// <param name="orderDto">Updated order data</param>
         /// <returns>The updated order</returns>
         /// <response code="200">Order updated successfully</response>
