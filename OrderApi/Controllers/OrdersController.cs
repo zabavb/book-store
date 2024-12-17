@@ -28,11 +28,11 @@ namespace OrderApi.Controllers
         /// <response code="404">Could not find the orders</response>
         [HttpGet]
         [Route("GetOrders")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var orders = await _orderService.GetOrdersAsync();
+            var orders = await _orderService.GetOrdersAsync(pageNumber, pageSize);
 
-            if (orders == null || !orders.Any())
+            if (orders == null || !orders.Items.Any())
             {
                 return NotFound("No orders found");
             }
@@ -46,7 +46,7 @@ namespace OrderApi.Controllers
         /// <param name="id">Order id</param>
         /// <returns>Order which id matches with given one</returns>
         /// <response code="200">Retrieval successful, return the order</response>
-        /// <response cose="404">Could not find the order</response>
+        /// <response code="404">Could not find the order</response>
         [HttpGet("{id}")]
 
         public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
@@ -67,36 +67,36 @@ namespace OrderApi.Controllers
         /// <returns>Created order</returns>
         /// <response code="201">Order created successfully</response>
         /// <response code="400">Invalid input data</response>
+        /// <response code="500">Object with the given Id already exists</response>
         [HttpPost]
         public async Task<ActionResult<OrderDto>> CreateOrder([FromBody]OrderDto orderDto)
         {
-            if (orderDto == null)
+            if (orderDto == null || !ModelState.IsValid)
             {
                 return BadRequest("Invalid data.");
             }
 
             var newOrder = await _orderService.CreateOrderAsync(orderDto);
 
-            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.OrderId }, newOrder);
+            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.Id }, newOrder);
         }
 
         /// <summary>
         /// Updates existing order
         /// </summary>
-        /// <param name="id">Order id</param>
         /// <param name="orderDto">Updated order data</param>
         /// <returns>The updated order</returns>
         /// <response code="200">Order updated successfully</response>
-        /// <response cose="400">Invalid input data</response>
-        [HttpPut("{id}")]
-        public async Task<ActionResult<OrderDto>> UpdateOrder(Guid id, [FromBody]OrderDto orderDto)
+        /// <response code="400">Invalid input data</response>
+        [HttpPut]
+        public async Task<ActionResult<OrderDto>> UpdateOrder([FromBody]OrderDto orderDto)
         {
-            if (orderDto == null)
+            if (orderDto == null || !ModelState.IsValid)
             {
                 return BadRequest("InvalidData.");
             }
 
-            var updatedOrder = await _orderService.UpdateOrderAsync(id, orderDto);
+            var updatedOrder = await _orderService.UpdateOrderAsync(orderDto);
 
             return Ok(updatedOrder);
         }

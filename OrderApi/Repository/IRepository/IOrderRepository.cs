@@ -1,6 +1,6 @@
 ﻿using OrderApi.Models;
 
-internal interface IOrderRepository
+public interface IOrderRepository
 {
     Task<IEnumerable<Order>> GetAllAsync();
     Task<Order?> GetByIdAsync(Guid id);
