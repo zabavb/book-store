@@ -96,7 +96,7 @@ namespace OrderApi.Controllers
                 return BadRequest("InvalidData.");
             }
 
-            var updatedOrder = await _orderService.UpdateOrderAsync(id, orderDto);
+            var updatedOrder = await _orderService.UpdateOrderAsync(orderDto);
 
             return Ok(updatedOrder);
         }
