@@ -1,5 +1,6 @@
 ﻿using Library.Validators;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.OrderEntities
 {
@@ -10,25 +11,27 @@ namespace Library.OrderEntities
         public Guid Id { get; set; }
         [Required]
         public Guid UserId { get; set; }
-        [Required]  
+        [Required]
         public List<Guid> BookIds { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [StringLength(100, ErrorMessage = "Region must be less than 100 characters.")]
         public string Region { get; set; }
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [StringLength(100, ErrorMessage = "City must be less than 100 characters.")]
         public string City { get; set; }
-        [Required]
-        [StringLength(255,ErrorMessage = "Address must be less than 255 characters.")]
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(255, ErrorMessage = "Address must be less than 255 characters.")]
         public string Address { get; set; }
 
         [Required]
         [Range(0, float.MaxValue)]
         public float Price { get; set; }
+
         [Required]
-        [EnumRange(typeof(DeliveryType))]
-        public DeliveryType Delivery { get; set; }
+        [ForeignKey(nameof(DeliveryType))]
+        public Guid DeliveryTypeId { get; set; }
+
         [Required]
         [Range(0, float.MaxValue)]
         public float DeliveryPrice { get; set; }
@@ -40,6 +43,8 @@ namespace Library.OrderEntities
         [EnumRange(typeof(OrderStatus))]
         public OrderStatus Status { get; set; }
 
+
+        public DeliveryType DeliveryType { get; set; }
         public Order()
         {
             BookIds = new List<Guid>();
