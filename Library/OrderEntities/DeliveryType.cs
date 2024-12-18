@@ -12,7 +12,7 @@ namespace Library.OrderEntities
         [StringLength(50, ErrorMessage = "Service name should be less than 50 characters.")]
         public string ServiceName { get; set; }
 
-        DeliveryType() 
+        public DeliveryType() 
         { 
             ServiceName = string.Empty;
         }
