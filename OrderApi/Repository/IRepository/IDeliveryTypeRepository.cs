@@ -1,13 +1,14 @@
 ﻿using OrderApi.Models;
+using OrderApi.Models.Extensions;
 
 namespace OrderApi.Repository.IRepository
 {
     public interface IDeliveryTypeRepository
     {
-        Task<IEnumerable<DeliveryType>> GetAllAsync();
+        Task<PaginatedResult<DeliveryType>> GetAllPaginatedAsync(int pageNumber, int pageSize);
         Task<DeliveryType?> GetByIdAsync(Guid id);
-        Task AddAsync(DeliveryType order);
-        Task DeleteAsync(DeliveryType order);
-        Task UpdateAsync(DeliveryType order);
+        Task AddAsync(DeliveryType deliveryType);
+        Task DeleteAsync(DeliveryType deliveryType);
+        Task UpdateAsync(DeliveryType deliveryType);
     }
 }
