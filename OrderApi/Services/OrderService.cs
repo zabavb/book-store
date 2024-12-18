@@ -103,7 +103,7 @@ namespace OrderApi.Services
             }
             catch (InvalidOperationException)
             {
-                _message = $"User with Id {orderDto.Id} not found for update.";
+                _message = $"Order with Id {orderDto.Id} not found for update.";
                 _logger.LogError(_message);
                 throw new KeyNotFoundException(_message);
             }
