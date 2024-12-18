@@ -1,4 +1,4 @@
-﻿using Library.OrderEntities;
+﻿using OrderStatus = Library.OrderEntities.OrderStatus;
 
 namespace OrderApi.Models
 {
@@ -13,12 +13,16 @@ namespace OrderApi.Models
         public string Address { get; set; }
 
         public float Price { get; set; }
-        public DeliveryType Delivery { get; set; }
+
+        public Guid DeliveryTypeId { get; set; }
         public float DeliveryPrice { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime DeliveryDate { get; set; }
 
         public OrderStatus Status { get; set; }
+
+
+        public DeliveryType DeliveryType { get; set; }
 
         public Order()
         {
@@ -28,6 +32,7 @@ namespace OrderApi.Models
             Address = string.Empty;
             OrderDate = DateTime.Now;
             Status = OrderStatus.PENDING;
+            DeliveryType = new DeliveryType();
         }
     }
 }
