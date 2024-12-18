@@ -19,29 +19,25 @@ namespace OrderApi.Services
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<Order>> GetOrdersAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<OrderDto>> GetOrdersAsync(int pageNumber, int pageSize)
         {
-            IEnumerable<Order> orders;
-            orders = await _repository.GetAllAsync();
-            if (orders == null || !orders.Any())
+            var paginatedOrders = await _repository.GetAllPaginatedAsync(pageNumber, pageSize);
+
+            if (paginatedOrders == null || paginatedOrders.Items == null)
             {
-                _message = "Failed to fetch orders.";
+                _message = "Failed to fetch paginated delivery types.";
                 _logger.LogError(_message);
                 throw new InvalidOperationException(_message);
             }
 
-            _logger.LogInformation("Orders fetched succesfully");
+            _logger.LogInformation("Delivery types successfully fetched.");
 
-            var totalOrders = await Task.FromResult(orders.Count());
-
-            orders = await Task.FromResult(orders.Skip((pageNumber - 1) * pageSize).Take(pageSize));
-
-            return new PaginatedResult<Order>
+            return new PaginatedResult<OrderDto>
             {
-                Items = (ICollection<Order>)orders,
-                TotalCount = totalOrders,
-                PageNumber = pageNumber,
-                PageSize = pageSize
+                Items = _mapper.Map<ICollection<OrderDto>>(paginatedOrders.Items),
+                TotalCount = paginatedOrders.TotalCount,
+                PageNumber = paginatedOrders.PageNumber,
+                PageSize = paginatedOrders.PageSize
             };
         }
 
