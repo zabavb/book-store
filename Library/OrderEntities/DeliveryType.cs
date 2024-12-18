@@ -6,7 +6,7 @@ namespace Library.OrderEntities
     {
         [Required]
         [Key]
-        public Guid id {  get; set; }
+        public Guid Id {  get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [StringLength(50, ErrorMessage = "Service name should be less than 50 characters.")]
