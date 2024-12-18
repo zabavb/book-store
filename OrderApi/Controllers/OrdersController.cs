@@ -55,7 +55,7 @@ namespace OrderApi.Controllers
 
             if(order == null)
             {
-                return NotFound($"Book with Id:{id} not found.");
+                return NotFound($"Order with Id:{id} not found.");
             }
             return Ok(order);
         }
