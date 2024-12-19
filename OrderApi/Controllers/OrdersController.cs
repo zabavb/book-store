@@ -15,6 +15,10 @@ namespace OrderApi.Controllers
     {
         private readonly IOrderService _orderService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrdersController"/> class.
+        /// </summary>
+        /// <param name="orderService">Service for order operations.</param>
         public OrdersController(IOrderService orderService)
         {
             _orderService = orderService;
@@ -55,7 +59,7 @@ namespace OrderApi.Controllers
 
             if(order == null)
             {
-                return NotFound($"Book with Id:{id} not found.");
+                return NotFound($"Order with Id:{id} not found.");
             }
             return Ok(order);
         }

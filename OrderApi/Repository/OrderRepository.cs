@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Models;
-using OrderApi.Services;
+using OrderApi.Models.Extensions;
 
 namespace OrderApi.Repository
 {
@@ -17,19 +17,30 @@ namespace OrderApi.Repository
             _message = string.Empty;
         }
 
-        public async Task<IEnumerable<Order>> GetAllAsync()
+        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize)
         {
-            var orders = await _context.Orders.ToListAsync();
+            IEnumerable<Order> orders = await _context.Orders.ToListAsync();
+
+            var totalOrders = await Task.FromResult(orders.Count());
+
+            orders = await Task.FromResult(orders.Skip((pageNumber - 1) * pageSize).Take(pageSize));
+
             if (orders == null)
             {
-                _message = "Failed to fetch orders.";
+                _message = "Failed to fetch delivery types";
                 _logger.LogError(_message);
                 throw new InvalidOperationException(_message);
             }
             else
-                _logger.LogInformation("Successfully fetched orders");
+                _logger.LogInformation("Successfully fetched delivery types");
 
-            return orders;
+            return new PaginatedResult<Order>
+            {
+                Items = (ICollection<Order>)orders,
+                TotalCount = totalOrders,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
         public async Task<Order?> GetByIdAsync(Guid id)

@@ -8,6 +8,7 @@ using System.Reflection;
 using OrderApi.Repository;
 using System.Collections.ObjectModel;
 using OrderApi.Profiles;
+using OrderApi.Repository.IRepository;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -16,15 +17,7 @@ builder.Services.AddDbContext<OrderDbContext>(options => options
         .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-/*var columnOptions = new ColumnOptions
-{
-    Store = { StandardColumn.Id, StandardColumn.LogEvent },
-    AdditionalColumns = new Collection<SqlColumn>
-    {
-        new SqlColumn("Properties", System.Data.SqlDbType.NVarChar) {DataLength = -1 }
-    }
-};*/
-try
+/*try
 {
     var logger = new LoggerConfiguration()
         .WriteTo.Console()
@@ -35,7 +28,7 @@ try
                 TableName = "Logs",
                 AutoCreateSqlTable = true
             },
-            /*        columnOptions: columnOptions,*/
+            *//*        columnOptions: columnOptions,*//*
             restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
         )
         .Enrich.WithProperty("LogTime", DateTime.UtcNow)
@@ -48,9 +41,12 @@ try
 catch (Exception ex)
 {
     throw new Exception("Logger cannot connect to the Database", ex);
-}
+}*/
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddScoped<IDeliveryTypeRepository, DeliveryTypeRepository>();
+builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 
 builder.Services.AddControllers();
 

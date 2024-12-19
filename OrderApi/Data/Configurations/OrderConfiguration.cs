@@ -30,9 +30,8 @@ namespace OrderApi.Data.Configurations
                 .IsRequired()
                 .HasColumnType("float");
 
-            // Will be moved into DB
-            builder.Property(o => o.Delivery)
-                .HasConversion<string>();
+            builder.Property(o => o.DeliveryTypeId)
+                .HasConversion<Guid>();
 
             builder.Property(o => o.Status)
                 .HasConversion<string>();
