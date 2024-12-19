@@ -26,12 +26,11 @@ namespace UserAPI.Controllers
         /// </summary>
         /// <param name="userService">Service for user operations.</param>
         /// <param name="logger">Logger for tracking operations.</param>
-        /// <param name="message">Message container for log messages.</param>
-        public UsersController(IUserService userService, ILogger<UsersController> logger, string message)
+        public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _logger = logger;
-            _message = message;
+            _message = string.Empty;
         }
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace UserAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -66,7 +65,7 @@ namespace UserAPI.Controllers
         /// <param name="id">The unique identifier of the user.</param>
         /// <returns>The user with the specified ID.</returns>
         /// <response code="200">Returns the user if found.</response>
-        /// <response code="404">If the user with the specified ID is not found.</response>
+        /// <response code="404">If the user with the specified ID is not found or ID was not specified.</response>
         /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
@@ -74,9 +73,9 @@ namespace UserAPI.Controllers
             try
             {
                 var user = await _userService.GetEntityByIdAsync(id);
-                if (user == null)
+                if (id.Equals(Guid.Empty))
                 {
-                    _message = $"User with ID {id} was not provided.";
+                    _message = $"User ID {id} was not provided.";
                     _logger.LogError(_message);
                     return NotFound(new { message = _message });
                 }
@@ -84,10 +83,15 @@ namespace UserAPI.Controllers
                 _logger.LogInformation($"User with ID [{id}] successfully fetched.");
                 return Ok(user);
             }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound, new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -111,10 +115,15 @@ namespace UserAPI.Controllers
                 _logger.LogInformation($"User with ID [{user.Id}] successfully created.");
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
             }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ModelState);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -147,6 +156,11 @@ namespace UserAPI.Controllers
                 _logger.LogInformation($"User with ID [{user.Id}] successfully updated.");
                 return NoContent();
             }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ModelState);
+            }
             catch (KeyNotFoundException ex)
             {
                 _logger.LogError(ex.Message);
@@ -155,7 +169,7 @@ namespace UserAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -184,7 +198,7 @@ namespace UserAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
     }
