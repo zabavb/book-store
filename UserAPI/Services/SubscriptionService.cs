@@ -8,17 +8,17 @@ namespace UserAPI.Services
 {
     public class SubscriptionService : ISubscriptionService
     {
-        private readonly SubscriptionRepository _repository;
+        private readonly ISubscriptionRepository _repository;
         private readonly IMapper _mapper;
         private readonly ILogger<ISubscriptionService> _logger;
         private string _message;
 
-        public SubscriptionService(SubscriptionRepository repository, IMapper mapper, ILogger<ISubscriptionService> logger, string message)
+        public SubscriptionService(ISubscriptionRepository repository, IMapper mapper, ILogger<ISubscriptionService> logger)
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
-            _message = message;
+            _message = string.Empty;
         }
 
         public async Task<PaginatedResult<SubscriptionDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)

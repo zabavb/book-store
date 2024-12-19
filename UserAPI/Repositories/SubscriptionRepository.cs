@@ -12,11 +12,11 @@ namespace UserAPI.Repositories
         private readonly ILogger<ISubscriptionRepository> _logger;
         private string _message;
 
-        public SubscriptionRepository(UserDbContext context, ILogger<ISubscriptionRepository> logger, string message)
+        public SubscriptionRepository(UserDbContext context, ILogger<ISubscriptionRepository> logger)
         {
             _context = context;
             _logger = logger;
-            _message = message;
+            _message = string.Empty;
         }
 
         public async Task<PaginatedResult<Subscription>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
