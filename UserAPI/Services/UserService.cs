@@ -7,17 +7,17 @@ namespace UserAPI.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserRepository _repository;
+        private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
         private readonly ILogger<IUserService> _logger;
         private string _message;
 
-        public UserService(UserRepository repository, IMapper mapper, ILogger<IUserService> logger, string message)
+        public UserService(IUserRepository repository, IMapper mapper, ILogger<IUserService> logger)
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
-            _message = message;
+            _message = string.Empty;
         }
 
         public async Task<PaginatedResult<UserDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
@@ -30,8 +30,7 @@ namespace UserAPI.Services
                 _logger.LogError(_message);
                 throw new InvalidOperationException(_message);
             }
-
-            _logger.LogInformation("Users successfully fetched.");
+            _logger.LogInformation("Successfully fetched [{Count}] users.", paginatedUsers.Items.Count());
 
             return new PaginatedResult<UserDto>
             {
@@ -52,8 +51,8 @@ namespace UserAPI.Services
                 _logger.LogError(_message);
                 throw new KeyNotFoundException(_message);
             }
-
             _logger.LogInformation($"User with ID [{id}] successfully fetched.");
+            
             return user == null ? null : _mapper.Map<UserDto>(user);
         }
 
@@ -61,7 +60,7 @@ namespace UserAPI.Services
         {
             if (entity == null)
             {
-                _message = "User was not provided.";
+                _message = "User was not provided for creation.";
                 _logger.LogError(_message);
                 throw new ArgumentNullException(_message, nameof(entity));
             }
@@ -116,7 +115,7 @@ namespace UserAPI.Services
                 await _repository.DeleteEntityAsync(id);
                 _logger.LogError($"User with ID [{id}] successfully deleted."); 
             }
-            catch (InvalidOperationException)
+            catch (KeyNotFoundException)
             {
                 _message = $"User with ID [{id}] not found for deletion.";
                 _logger.LogError(_message);
