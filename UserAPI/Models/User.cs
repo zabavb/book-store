@@ -1,4 +1,6 @@
-﻿namespace UserAPI.Models
+﻿using Library.UserEntities;
+
+namespace UserAPI.Models
 {
     public class User
     {
@@ -24,8 +26,6 @@
             Email = string.Empty;
             PhoneNumber = string.Empty;
             Role = RoleType.GUEST;
-            Password = new();
-            Subscription = new();
         }
     }
 }

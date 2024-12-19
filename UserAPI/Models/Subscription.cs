@@ -14,7 +14,6 @@
             Title = string.Empty;
             Description = string.Empty;
             EndDate = DateTime.Now.AddDays(1);
-            Users = new HashSet<User>();
         }
     }
 }
