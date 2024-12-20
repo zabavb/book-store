@@ -31,8 +31,7 @@ namespace UserAPI.Services
                 _logger.LogError(_message);
                 throw new InvalidOperationException(_message);
             }
-
-            _logger.LogInformation("Subscriptions successfully fetched.");
+            _logger.LogInformation("Successfully fetched [{Count}] users.", paginatedSubscriptions.Items.Count());
 
             return new PaginatedResult<SubscriptionDto>
             {
@@ -71,7 +70,7 @@ namespace UserAPI.Services
             try
             {
                 await _repository.AddEntityAsync(subscription);
-                _logger.LogInformation($"Subscription with ID [{entity.Id}] successfully created.");
+                _logger.LogInformation($"Subscription successfully created.");
             }
             catch (Exception ex)
             {
@@ -94,7 +93,7 @@ namespace UserAPI.Services
             try
             {
                 await _repository.UpdateEntityAsync(subscription);
-                _logger.LogInformation($"Subscription successfully updated to [{entity}].");
+                _logger.LogInformation($"User with ID [{entity.Id}] successfully updated.");
             }
             catch (InvalidOperationException)
             {
@@ -117,7 +116,7 @@ namespace UserAPI.Services
                 await _repository.DeleteEntityAsync(id);
                 _logger.LogInformation($"Subscription with ID [{id}] successfully deleted.");
             }
-            catch (InvalidOperationException)
+            catch (KeyNotFoundException)
             {
                 _message = $"Subscription with ID {id} not found for deletion.";
                 _logger.LogError(_message);
