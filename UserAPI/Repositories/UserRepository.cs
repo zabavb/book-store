@@ -8,13 +8,8 @@ namespace UserAPI.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly UserDbContext _context;
-        private string _message;
 
-        public UserRepository(UserDbContext context)
-        {
-            _context = context;
-            _message = string.Empty;
-        }
+        public UserRepository(UserDbContext context) => _context = context;
 
         public async Task<PaginatedResult<User>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
         {
@@ -32,7 +27,7 @@ namespace UserAPI.Repositories
             ICollection<User> result = new List<User>(users);
             return new PaginatedResult<User>
             {
-                Items = /*(ICollection<User>)users*/result,
+                Items = result,
                 TotalCount = totalUsers,
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -80,7 +75,7 @@ namespace UserAPI.Repositories
         public async Task UpdateEntityAsync(User entity)
         {
             if (!await _context.Users.AnyAsync(u => u.UserId == entity.UserId))
-                throw new InvalidOperationException(_message);
+                throw new InvalidOperationException();
 
             _context.Users.Update(entity);
             await _context.SaveChangesAsync();
@@ -91,7 +86,7 @@ namespace UserAPI.Repositories
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
-                throw new KeyNotFoundException(_message);
+                throw new KeyNotFoundException();
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
