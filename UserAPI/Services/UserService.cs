@@ -73,7 +73,7 @@ namespace UserAPI.Services
             }
             catch (Exception ex)
             {
-                _message = "Error occurred while adding the user.";
+                _message = $"Error occurred while adding the user with ID [{entity.Id}].";
                 _logger.LogError(_message);
                 throw new InvalidOperationException(_message, ex);
             }
@@ -102,7 +102,7 @@ namespace UserAPI.Services
             }
             catch (Exception ex)
             {
-                _message = $"Error occurred while updating the user with id[{entity.Id}].";
+                _message = $"Error occurred while updating the user with ID [{entity.Id}].";
                 _logger.LogError(_message);
                 throw new InvalidOperationException(_message, ex);
             }
