@@ -48,15 +48,6 @@ using (var scope = app.Services.CreateScope())
         {
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.MSSqlServer(
-                    connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-                    sinkOptions: new MSSqlServerSinkOptions
-                    {
-                        TableName = "Logs",
-                        AutoCreateSqlTable = true
-                    },
-                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
-                )
                 .Enrich.WithProperty("LogTime", DateTime.UtcNow)
                 .WriteTo.Console(outputTemplate: "{Level}: {Message} - {LogTime:yyyy-MM-dd HH:mm:ss}{NewLine}")
                 .CreateLogger();
