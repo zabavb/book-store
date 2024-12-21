@@ -17,9 +17,16 @@ namespace OrderApi.Repository
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize, string searchTerm, OrderFilter? filter)
         {
-            IEnumerable<Order> orders = await _context.Orders.ToListAsync();
+            IEnumerable<Order> orders;
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                orders = await SearchEntitiesAsync(searchTerm);
+            else
+                orders = await _context.Orders.AsNoTracking().ToListAsync();
+
+            if (orders.Any() && filter != null)
+                orders = await FilterEntitiesAsync(orders, filter);
 
             var totalOrders = await Task.FromResult(orders.Count());
 
@@ -42,6 +49,41 @@ namespace OrderApi.Repository
                 PageSize = pageSize
             };
         }
+
+        public async Task<IEnumerable<Order>> SearchEntitiesAsync(string searchTerm)
+        {
+            var orders = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.Address.Contains(searchTerm) || 
+                            o.Region.Contains(searchTerm) ||
+                            o.City.Contains(searchTerm))
+                .ToListAsync();
+            return orders;
+        }
+
+        public async Task<IEnumerable<Order>> FilterEntitiesAsync(IEnumerable<Order> orders,OrderFilter filter)
+        {
+            if (filter.OrderDateStart.HasValue)
+                orders = orders.Where(o => o.OrderDate >= filter.OrderDateStart.Value);
+
+            if (filter.OrderDateEnd.HasValue)
+                orders = orders.Where(o => o.OrderDate <= filter.OrderDateEnd.Value);
+
+            if (filter.DeliveryDateStart.HasValue)
+                orders = orders.Where(o => o.DeliveryDate >= filter.DeliveryDateStart);
+
+            if (filter.DeliveryDateEnd.HasValue)
+                orders = orders.Where(o => o.DeliveryDate <= filter.DeliveryDateEnd);
+
+            if (filter.Status.HasValue)
+                orders = orders.Where(o => o.Status == filter.Status);
+
+            if (filter.DeliveryId.HasValue)
+                orders = orders.Where(o => o.DeliveryTypeId == filter.DeliveryId);
+
+            return await Task.FromResult(orders.ToList());
+        }
+
 
         public async Task<Order?> GetByIdAsync(Guid id)
         {

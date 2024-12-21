@@ -19,9 +19,9 @@ namespace OrderApi.Services
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<OrderDto>> GetOrdersAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<OrderDto>> GetOrdersAsync(int pageNumber, int pageSize, string searchTerm, OrderFilter? filter)
         {
-            var paginatedOrders = await _repository.GetAllPaginatedAsync(pageNumber, pageSize);
+            var paginatedOrders = await _repository.GetAllPaginatedAsync(pageNumber, pageSize, searchTerm, filter);
 
             if (paginatedOrders == null || paginatedOrders.Items == null)
             {
