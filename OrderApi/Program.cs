@@ -59,21 +59,6 @@ builder.Logging.AddSerilog(Log.Logger);
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
-    if (dbContext.Database.EnsureCreated())
-    {
-        try
-        {
-            
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Logger cannot connect to the Database", ex);
-        }
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
