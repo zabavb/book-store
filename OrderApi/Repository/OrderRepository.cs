@@ -17,9 +17,16 @@ namespace OrderApi.Repository
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize, string searchTerm, OrderFilter? filter)
         {
-            IEnumerable<Order> orders = await _context.Orders.ToListAsync();
+            IEnumerable<Order> orders;
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                orders = await SearchEntitiesAsync(searchTerm);
+            else
+                orders = await _context.Orders.AsNoTracking().ToListAsync();
+
+            if (orders.Any() && filter != null)
+                orders = await FilterEntitiesAsync(orders, filter);
 
             var totalOrders = await Task.FromResult(orders.Count());
 
@@ -74,7 +81,7 @@ namespace OrderApi.Repository
             if (filter.DeliveryId.HasValue)
                 orders = orders.Where(o => o.DeliveryTypeId == filter.DeliveryId);
 
-            return await Task.FromResult(orders);
+            return await Task.FromResult(orders.ToList());
         }
 
 
