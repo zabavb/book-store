@@ -43,6 +43,41 @@ namespace OrderApi.Repository
             };
         }
 
+        public async Task<IEnumerable<Order>> SearchEntitiesAsync(string searchTerm)
+        {
+            var orders = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.Address.Contains(searchTerm) || 
+                            o.Region.Contains(searchTerm) ||
+                            o.City.Contains(searchTerm))
+                .ToListAsync();
+            return orders;
+        }
+
+        public async Task<IEnumerable<Order>> FilterEntitiesAsync(IEnumerable<Order> orders,OrderFilter filter)
+        {
+            if (filter.OrderDateStart.HasValue)
+                orders = orders.Where(o => o.OrderDate >= filter.OrderDateStart.Value);
+
+            if (filter.OrderDateEnd.HasValue)
+                orders = orders.Where(o => o.OrderDate <= filter.OrderDateEnd.Value);
+
+            if (filter.DeliveryDateStart.HasValue)
+                orders = orders.Where(o => o.DeliveryDate >= filter.DeliveryDateStart);
+
+            if (filter.DeliveryDateEnd.HasValue)
+                orders = orders.Where(o => o.DeliveryDate <= filter.DeliveryDateEnd);
+
+            if (filter.Status.HasValue)
+                orders = orders.Where(o => o.Status == filter.Status);
+
+            if (filter.DeliveryId.HasValue)
+                orders = orders.Where(o => o.DeliveryTypeId == filter.DeliveryId);
+
+            return await Task.FromResult(orders);
+        }
+
+
         public async Task<Order?> GetByIdAsync(Guid id)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
