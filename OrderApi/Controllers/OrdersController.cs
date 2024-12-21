@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderApi.Models.Extensions;
 using OrderApi.Services;
 
 namespace OrderApi.Controllers
@@ -32,16 +33,17 @@ namespace OrderApi.Controllers
         /// <response code="404">Could not find the orders</response>
         [HttpGet]
         [Route("GetOrders")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = null, [FromQuery] OrderFilter? filter = null)
         {
-            var orders = await _orderService.GetOrdersAsync(pageNumber, pageSize);
-
-            if (orders == null || !orders.Items.Any())
+            try
             {
-                return NotFound("No orders found");
+                var orders = await _orderService.GetOrdersAsync(pageNumber, pageSize, searchTerm!, filter);
+                return Ok(orders);
+            }
+            catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
 
-            return Ok(orders);
         }
 
         /// <summary>
