@@ -2,8 +2,10 @@
 
 namespace Client.Models.UserEntities.Subscription
 {
-    public class ManageViewModel
+    public class ManageSubscriptionViewModel
     {
+        public Guid Id { get; set; }
+
         [Required(ErrorMessage = "Title is required.")]
         [StringLength(64, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 64 characters.")]
         public string Title { get; set; }
@@ -16,7 +18,7 @@ namespace Client.Models.UserEntities.Subscription
         [FutureDate(ErrorMessage = "End date must be in the future.")]
         public DateTime EndDate { get; set; }
 
-        public ManageViewModel()
+        public ManageSubscriptionViewModel()
         {
             Title = string.Empty;
             Description = null;
