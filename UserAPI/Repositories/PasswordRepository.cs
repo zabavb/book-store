@@ -6,19 +6,24 @@ using UserAPI.Models;
 
 namespace UserAPI.Repositories
 {
-    public class PasswordService : IPasswordRepository
+    public class PasswordRepository : IPasswordRepository
     {
 
         private readonly UserDbContext _context;
 
-        public PasswordService(UserDbContext context)
+        public PasswordRepository(UserDbContext context)
         {
             _context = context;
 
         }
+        public PasswordRepository()
+        {
+            _context = null;
+
+        }
 
 
-        private string HashPassword(string password, string salt)
+        public string HashPassword(string password, string salt)
         {
             using var sha256 = SHA256.Create();
             var combined = Encoding.UTF8.GetBytes(password + salt);
@@ -45,16 +50,16 @@ namespace UserAPI.Repositories
             return result.Substring(0, result.Length - (size / 8));
         }
 
-        public async Task<Password> GetByPasswordIdAsync(Guid passwordId)
+        public async Task<Password> GetByIdAsync(Guid passwordId)
         {
             return await _context.Passwords.FirstOrDefaultAsync(p => p.PasswordId == passwordId);
         }
 
-        public async Task<bool> UpdatePasswordAsync(Guid userId, string newPassword)
+        public async Task<bool> UpdateAsync(Guid userId, string newPassword)
         {
-            if (await VerifyPasswordAsync(userId, newPassword))
+            if (await VerifyAsync(userId, newPassword))
             {
-                var passwordEntity = await GetEntityByPasswordIdAsync(userId);
+                var passwordEntity = await GetByIdAsync(userId);
                 var newPasswordEntity = new Password
                 {
                     PasswordId = passwordEntity.PasswordId,
@@ -71,16 +76,16 @@ namespace UserAPI.Repositories
             return false;
         }
 
-        public async Task<bool> VerifyPasswordAsync(Guid passwordId, string plainPassword)
+        public async Task<bool> VerifyAsync(Guid passwordId, string plainPassword)
         {
-            var passwordEntity = await GetEntityByPasswordIdAsync(passwordId);
+            var passwordEntity = await GetByIdAsync(passwordId);
             if (passwordEntity == null) return false;
 
             var hashedInput = HashPassword(plainPassword, passwordEntity.PasswordSalt);
             return hashedInput == passwordEntity.PasswordHash;
         }
 
-        public async Task<bool> AddPasswordAsync(string password, User user)
+        public async Task<bool> AddAsync(string password, User user)
         {
             var salt = GenerateSalt();
             var hash = HashPassword(password, salt);
@@ -99,7 +104,7 @@ namespace UserAPI.Repositories
             return true;
         }
 
-        public async Task<bool> DeletePasswordAsync(Guid passwordId)
+        public async Task<bool> DeleteAsync(Guid passwordId)
         {
             try
             {
@@ -116,12 +121,9 @@ namespace UserAPI.Repositories
             }
         }
 
-        public async Task<Password> GetEntityByPasswordIdAsync(Guid passwordId)
-        {
-            return await _context.Passwords.FirstOrDefaultAsync(p => p.PasswordId == passwordId);
-        }
+        
 
-        public async Task<string> GetHashByPasswordIdAsync(Guid passwordId)
+        public async Task<string> GetHashByIdAsync(Guid passwordId)
         {
             return  _context.Passwords.FirstOrDefaultAsync(p => p.PasswordId == passwordId).Result.PasswordHash;
         }
