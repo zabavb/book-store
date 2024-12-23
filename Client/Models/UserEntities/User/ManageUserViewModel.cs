@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Client.Models.User
 {
-    public class ManageViewModel
+    public class ManageUserViewModel
     {
+        public Guid Id { get; set; }
+
         [Required(ErrorMessage = "First name is required.")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters.")]
         public string FirstName { get; set; }
@@ -29,7 +31,7 @@ namespace Client.Models.User
         [Required(ErrorMessage = "Role is required.")]
         public RoleType Role { get; set; }
 
-        public ManageViewModel()
+        public ManageUserViewModel()
         {
             FirstName = string.Empty;
             LastName = null;

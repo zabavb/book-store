@@ -2,8 +2,10 @@
 
 namespace Client.Models.UserEntities.Password
 {
-    public class ManageViewModel
+    public class ManagePasswordViewModel
     {
+        public Guid Id { get; set; }
+
         [Required(ErrorMessage = "Password is required.")]
         [DataType(DataType.Password)]
         [StringLength(32, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 32 characters.")]
@@ -16,7 +18,7 @@ namespace Client.Models.UserEntities.Password
         [Compare("Password", ErrorMessage = "Passwords must match.")]
         public string ConfirmPassword { get; set; }
 
-        public ManageViewModel() {
+        public ManagePasswordViewModel() {
             Password = string.Empty;
             ConfirmPassword = string.Empty;
         }

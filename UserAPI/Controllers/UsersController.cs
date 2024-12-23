@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UserAPI.Models.Extensions;
 using UserAPI.Services;
 
 namespace UserAPI.Controllers
@@ -44,7 +43,7 @@ namespace UserAPI.Controllers
         /// <response code="200">Returns the paginated list of users.</response>
         /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = null, [FromQuery] UserFilter? filter = null)
+        public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = null, [FromQuery] Filter? filter = null)
         {
             try
             {

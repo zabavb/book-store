@@ -1,4 +1,9 @@
+using Client.Profiles;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddScoped<HttpClient>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
@@ -23,6 +28,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

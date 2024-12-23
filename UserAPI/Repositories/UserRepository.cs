@@ -11,7 +11,7 @@ namespace UserAPI.Repositories
 
         public UserRepository(UserDbContext context) => _context = context;
 
-        public async Task<PaginatedResult<User>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, UserFilter? filter)
+        public async Task<PaginatedResult<User>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter)
         {
             IEnumerable<User> users;
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -49,7 +49,7 @@ namespace UserAPI.Repositories
             return users;
         }
 
-        public async Task<IEnumerable<User>> FilterEntitiesAsync(IEnumerable<User> users, UserFilter filter)
+        public async Task<IEnumerable<User>> FilterEntitiesAsync(IEnumerable<User> users, Filter filter)
         {
             if (filter.Role.HasValue)
                 users = users.Where(u => u.Role.Equals(filter.Role));
