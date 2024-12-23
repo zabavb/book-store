@@ -33,7 +33,7 @@ namespace OrderApi.Controllers
         /// <response code="404">Could not find the orders</response>
         [HttpGet]
         [Route("GetOrders")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = null, [FromQuery] OrderFilter? filter = null)
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? searchTerm = null, [FromQuery] Filter? filter = null)
         {
             try
             {
