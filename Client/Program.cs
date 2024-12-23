@@ -23,7 +23,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddScoped<HttpClient>();
-builder.Services.AddControllersWithViews();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Add("/Client/Views/{1}/{0}.cshtml");
+    });
 
 var app = builder.Build();
 
