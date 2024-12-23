@@ -3,6 +3,10 @@ using Client.Profiles;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(UserProfile));
+
+builder.Services.AddAutoMapper(typeof(OrderProfile));
+builder.Services.AddAutoMapper(typeof(DeliveryTypeProfile));
+
 builder.Services.AddScoped<HttpClient>();
 
 // Add services to the container.
