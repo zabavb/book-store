@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj" />
+    <ProjectReference Include="..\OrderApi\OrderApi.csproj" />
   </ItemGroup>
 
 </Project>
