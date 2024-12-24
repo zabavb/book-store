@@ -17,7 +17,7 @@ namespace OrderApi.Repository
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize, string searchTerm, OrderFilter? filter)
+        public async Task<PaginatedResult<Order>> GetAllPaginatedAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter)
         {
             IEnumerable<Order> orders;
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -61,7 +61,7 @@ namespace OrderApi.Repository
             return orders;
         }
 
-        public async Task<IEnumerable<Order>> FilterEntitiesAsync(IEnumerable<Order> orders,OrderFilter filter)
+        public async Task<IEnumerable<Order>> FilterEntitiesAsync(IEnumerable<Order> orders,Filter filter)
         {
             if (filter.OrderDateStart.HasValue)
                 orders = orders.Where(o => o.OrderDate >= filter.OrderDateStart.Value);

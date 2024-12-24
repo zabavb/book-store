@@ -1,8 +1,7 @@
 ﻿using Library.OrderEntities;
-using Microsoft.Identity.Client;
 
-namespace OrderApi.Models.Extensions
-{
+namespace Library.Filters 
+{ 
     public class OrderFilter
     {
         public DateTime? OrderDateStart { get; set; }
