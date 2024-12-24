@@ -1,7 +1,7 @@
 ﻿using Library.OrderEntities;
 
-namespace Library.Filters 
-{ 
+namespace Library.Filters
+{
     public class OrderFilter
     {
         public DateTime? OrderDateStart { get; set; }

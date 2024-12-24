@@ -1,7 +1,7 @@
 ﻿using UserAPI.Repositories;
 using AutoMapper;
-using UserAPI.Models.Extensions;
 using UserAPI.Models;
+using Library.Extensions;
 
 namespace UserAPI.Services
 {
