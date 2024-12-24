@@ -20,9 +20,9 @@ namespace UserAPI.Services
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<UserDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter)
+        public async Task<PaginatedResult<UserDto>> GetAllAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter)
         {
-            var paginatedUsers = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm, filter);
+            var paginatedUsers = await _repository.GetAllAsync(pageNumber, pageSize, searchTerm, filter);
 
             if (paginatedUsers == null || paginatedUsers.Items == null)
             {
@@ -41,9 +41,9 @@ namespace UserAPI.Services
             };
         }
 
-        public async Task<UserDto?> GetEntityByIdAsync(Guid id)
+        public async Task<UserDto?> GetByIdAsync(Guid id)
         {
-            var user = await _repository.GetEntityByIdAsync(id);
+            var user = await _repository.GetByIdAsync(id);
             
             if (user == null)
             {
@@ -56,7 +56,7 @@ namespace UserAPI.Services
             return user == null ? null : _mapper.Map<UserDto>(user);
         }
 
-        public async Task AddEntityAsync(UserDto entity)
+        public async Task AddAsync(UserDto entity)
         {
             if (entity == null)
             {
@@ -68,7 +68,7 @@ namespace UserAPI.Services
             var user = _mapper.Map<User>(entity);
             try
             {
-                await _repository.AddEntityAsync(user);
+                await _repository.AddAsync(user);
                 _logger.LogInformation("User successfully created.");
             }
             catch (Exception ex)
@@ -79,7 +79,7 @@ namespace UserAPI.Services
             }
         }
 
-        public async Task UpdateEntityAsync(UserDto entity)
+        public async Task UpdateAsync(UserDto entity)
         {
             if (entity == null)
             {
@@ -91,7 +91,7 @@ namespace UserAPI.Services
             var user = _mapper.Map<User>(entity);
             try
             {
-                await _repository.UpdateEntityAsync(user);
+                await _repository.UpdateAsync(user);
                 _logger.LogInformation($"User with ID [{entity.Id}] successfully updated.");
             }
             catch (InvalidOperationException)
@@ -108,11 +108,11 @@ namespace UserAPI.Services
             }
         }
 
-        public async Task DeleteEntityAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             try
             {
-                await _repository.DeleteEntityAsync(id);
+                await _repository.DeleteAsync(id);
                 _logger.LogError($"User with ID [{id}] successfully deleted."); 
             }
             catch (KeyNotFoundException)

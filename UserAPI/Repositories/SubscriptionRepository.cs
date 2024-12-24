@@ -12,11 +12,11 @@ namespace UserAPI.Repositories
 
         public SubscriptionRepository(UserDbContext context) => _context = context;
 
-        public async Task<PaginatedResult<Subscription>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
+        public async Task<PaginatedResult<Subscription>> GetAllAsync(int pageNumber, int pageSize, string searchTerm)
         {
             IEnumerable<Subscription> subscriptions;
             if (string.IsNullOrWhiteSpace(searchTerm))
-                subscriptions = await SearchEntitiesAsync(searchTerm);
+                subscriptions = await SearchAsync(searchTerm);
             else
                 subscriptions = _context.Subscriptions.AsNoTracking();
 
@@ -33,10 +33,10 @@ namespace UserAPI.Repositories
             };
         }
 
-        public async Task<Subscription?> GetEntityByIdAsync(Guid id) =>
+        public async Task<Subscription?> GetByIdAsync(Guid id) =>
             await _context.Subscriptions.AsNoTracking().FirstOrDefaultAsync(s => s.SubscriptionId == id);
 
-        public async Task<IEnumerable<Subscription>> SearchEntitiesAsync(string searchTerm)
+        public async Task<IEnumerable<Subscription>> SearchAsync(string searchTerm)
         {
             var subscriptions = await _context.Subscriptions
                 .AsNoTracking()
@@ -46,13 +46,13 @@ namespace UserAPI.Repositories
             return subscriptions;
         }
 
-        public async Task AddEntityAsync(Subscription entity)
+        public async Task AddAsync(Subscription entity)
         {
             await _context.Subscriptions.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateEntityAsync(Subscription entity)
+        public async Task UpdateAsync(Subscription entity)
         {
             if (!await _context.Subscriptions.AnyAsync(s => s.SubscriptionId == entity.SubscriptionId))
                 throw new InvalidOperationException();
@@ -61,7 +61,7 @@ namespace UserAPI.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteEntityAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var subscription = await _context.Subscriptions.FindAsync(id);
 

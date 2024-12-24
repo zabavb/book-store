@@ -11,15 +11,15 @@ namespace UserAPI.Repositories
 
         public UserRepository(UserDbContext context) => _context = context;
 
-        public async Task<PaginatedResult<User>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter)
+        public async Task<PaginatedResult<User>> GetAllAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter)
         {
             IEnumerable<User> users;
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                users = await SearchEntitiesAsync(searchTerm);
+                users = await SearchAsync(searchTerm);
             else
                 users = _context.Users.AsNoTracking();
             if (users.Any() && filter != null)
-                users = await FilterEntitiesAsync(users, filter);
+                users = await FilterAsync(users, filter);
 
             var totalUsers = await Task.FromResult(users.Count());
 
@@ -34,10 +34,10 @@ namespace UserAPI.Repositories
             };
         }
 
-        public async Task<User?> GetEntityByIdAsync(Guid id) =>
+        public async Task<User?> GetByIdAsync(Guid id) =>
             await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == id);
 
-        public async Task<IEnumerable<User>> SearchEntitiesAsync(string searchTerm)
+        public async Task<IEnumerable<User>> SearchAsync(string searchTerm)
         {
             var users = await _context.Users
                 .AsNoTracking()
@@ -49,7 +49,7 @@ namespace UserAPI.Repositories
             return users;
         }
 
-        public async Task<IEnumerable<User>> FilterEntitiesAsync(IEnumerable<User> users, Filter filter)
+        public async Task<IEnumerable<User>> FilterAsync(IEnumerable<User> users, Filter filter)
         {
             if (filter.Role.HasValue)
                 users = users.Where(u => u.Role.Equals(filter.Role));
@@ -66,13 +66,13 @@ namespace UserAPI.Repositories
             return await Task.FromResult(users);
         }
 
-        public async Task AddEntityAsync(User entity)
+        public async Task AddAsync(User entity)
         {
             await _context.Users.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateEntityAsync(User entity)
+        public async Task UpdateAsync(User entity)
         {
             if (!await _context.Users.AnyAsync(u => u.UserId == entity.UserId))
                 throw new InvalidOperationException();
@@ -81,7 +81,7 @@ namespace UserAPI.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteEntityAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
 

@@ -2,7 +2,6 @@
 using AutoMapper;
 using UserAPI.Models.Extensions;
 using UserAPI.Models;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace UserAPI.Services
 {
@@ -21,9 +20,9 @@ namespace UserAPI.Services
             _message = string.Empty;
         }
 
-        public async Task<PaginatedResult<SubscriptionDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm)
+        public async Task<PaginatedResult<SubscriptionDto>> GetAllAsync(int pageNumber, int pageSize, string searchTerm)
         {
-            var paginatedSubscriptions = await _repository.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm);
+            var paginatedSubscriptions = await _repository.GetAllAsync(pageNumber, pageSize, searchTerm);
 
             if (paginatedSubscriptions == null || paginatedSubscriptions.Items == null)
             {
@@ -42,9 +41,9 @@ namespace UserAPI.Services
             };
         }
 
-        public async Task<SubscriptionDto?> GetEntityByIdAsync(Guid id)
+        public async Task<SubscriptionDto?> GetByIdAsync(Guid id)
         {
-            var subscription = await _repository.GetEntityByIdAsync(id);
+            var subscription = await _repository.GetByIdAsync(id);
 
             if (subscription == null)
             {
@@ -57,7 +56,7 @@ namespace UserAPI.Services
             return subscription == null ? null : _mapper.Map<SubscriptionDto>(subscription);
         }
 
-        public async Task AddEntityAsync(SubscriptionDto entity)
+        public async Task AddAsync(SubscriptionDto entity)
         {
             if (entity == null)
             {
@@ -69,7 +68,7 @@ namespace UserAPI.Services
             var subscription = _mapper.Map<Subscription>(entity);
             try
             {
-                await _repository.AddEntityAsync(subscription);
+                await _repository.AddAsync(subscription);
                 _logger.LogInformation($"Subscription successfully created.");
             }
             catch (Exception ex)
@@ -80,7 +79,7 @@ namespace UserAPI.Services
             }
         }
 
-        public async Task UpdateEntityAsync(SubscriptionDto entity)
+        public async Task UpdateAsync(SubscriptionDto entity)
         {
             if (entity == null)
             {
@@ -92,7 +91,7 @@ namespace UserAPI.Services
             var subscription = _mapper.Map<Subscription>(entity);
             try
             {
-                await _repository.UpdateEntityAsync(subscription);
+                await _repository.UpdateAsync(subscription);
                 _logger.LogInformation($"User with ID [{entity.Id}] successfully updated.");
             }
             catch (InvalidOperationException)
@@ -109,11 +108,11 @@ namespace UserAPI.Services
             }
         }
 
-        public async Task DeleteEntityAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             try
             {
-                await _repository.DeleteEntityAsync(id);
+                await _repository.DeleteAsync(id);
                 _logger.LogInformation($"Subscription with ID [{id}] successfully deleted.");
             }
             catch (KeyNotFoundException)

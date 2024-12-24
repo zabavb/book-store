@@ -4,10 +4,10 @@ namespace UserAPI.Services
 {
     public interface IUserService
     {
-        Task<PaginatedResult<UserDto>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter);
-        Task<UserDto?> GetEntityByIdAsync(Guid id);
-        Task AddEntityAsync(UserDto entity);
-        Task UpdateEntityAsync(UserDto entity);
-        Task DeleteEntityAsync(Guid id);
+        Task<PaginatedResult<UserDto>> GetAllAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter);
+        Task<UserDto?> GetByIdAsync(Guid id);
+        Task AddAsync(UserDto entity);
+        Task UpdateAsync(UserDto entity);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -5,11 +5,11 @@ namespace UserAPI.Repositories
 {
     public interface ISubscriptionRepository
     {
-        Task<PaginatedResult<Subscription>> GetAllEntitiesPaginatedAsync(int pageNumber, int pageSize, string searchTerm);
-        Task<Subscription?> GetEntityByIdAsync(Guid id);
-        Task<IEnumerable<Subscription>> SearchEntitiesAsync(string searchTerm);
-        Task AddEntityAsync(Subscription entity);
-        Task UpdateEntityAsync(Subscription entity);
-        Task DeleteEntityAsync(Guid id);
+        Task<PaginatedResult<Subscription>> GetAllAsync(int pageNumber, int pageSize, string searchTerm);
+        Task<Subscription?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Subscription>> SearchAsync(string searchTerm);
+        Task AddAsync(Subscription entity);
+        Task UpdateAsync(Subscription entity);
+        Task DeleteAsync(Guid id);
     }
 }
