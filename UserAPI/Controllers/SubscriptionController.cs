@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models;
-using UserAPI.Models.Extensions;
 using UserAPI.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Library.Extensions;
 
 namespace UserAPI.Controllers
 {
@@ -23,7 +23,7 @@ namespace UserAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<SubscriptionDto>>> GetAllSubscriptions(int pageNumber, int pageSize, string searchTerm = "")
         {
-            var subscriptions = await _subscriptionService.GetAllEntitiesPaginatedAsync(pageNumber, pageSize, searchTerm);
+            var subscriptions = await _subscriptionService.GetAllAsync(pageNumber, pageSize, searchTerm);
             return Ok(subscriptions);
         }
 
@@ -31,7 +31,7 @@ namespace UserAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SubscriptionDto>> GetSubscriptionById(Guid id)
         {
-            var subscription = await _subscriptionService.GetEntityByIdAsync(id);
+            var subscription = await _subscriptionService.GetByIdAsync(id);
             if (subscription == null)
             {
                 return NotFound();
@@ -47,7 +47,7 @@ namespace UserAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await _subscriptionService.AddEntityAsync(subscriptionDto);
+            await _subscriptionService.AddAsync(subscriptionDto);
             return CreatedAtAction(nameof(GetSubscriptionById), new { id = subscriptionDto.Id }, subscriptionDto);
         }
 
@@ -63,7 +63,7 @@ namespace UserAPI.Controllers
             {
                 return BadRequest("ID mismatch.");
             }
-            await _subscriptionService.UpdateEntityAsync(subscriptionDto);
+            await _subscriptionService.UpdateAsync(subscriptionDto);
             return NoContent();
         }
 
@@ -71,7 +71,7 @@ namespace UserAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubscription(Guid id)
         {
-            await _subscriptionService.DeleteEntityAsync(id);
+            await _subscriptionService.DeleteAsync(id);
             return NoContent();
         }
     }
