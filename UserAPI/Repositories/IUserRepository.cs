@@ -1,16 +1,13 @@
-﻿using UserAPI.Models;
-using UserAPI.Models.Extensions;
+﻿using Library.Extensions;
+using Library.Interfaces;
+using UserAPI.Models;
 
 namespace UserAPI.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IManagable<User>
     {
         Task<PaginatedResult<User>> GetAllAsync(int pageNumber, int pageSize, string searchTerm, Filter? filter);
-        Task<User?> GetByIdAsync(Guid id);
+        Task<IEnumerable<User>> FilterAsync(IEnumerable<User> entities, Filter filter);
         Task<IEnumerable<User>> SearchAsync(string searchTerm);
-        Task<IEnumerable<User>> FilterAsync(IEnumerable<User> users, Filter filter);
-        Task AddAsync(User entity);
-        Task UpdateAsync(User entity);
-        Task DeleteAsync(Guid id);
     }
 }
